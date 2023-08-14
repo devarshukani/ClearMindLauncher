@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SettingsActivity"
+    android:background="@color/PrimaryBackgroundColor">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_margin="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="40sp"
+            android:text="Settings"
+            android:fontFamily="@font/sf_pro_display_bold"
+            android:textColor="@color/PrimaryTextColor"
+            android:layout_marginTop="30dp"/>
+
+        <LinearLayout
+            android:id="@+id/ButtonCustomization"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/search_bar_background"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:text="Customization"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:textStyle="bold"
+                android:textColor="@color/PrimaryTextColor"
+                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="15dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:text="Themes, Color, Background"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:textColor="@color/PrimaryTextColor"
+                android:layout_marginBottom="15dp"
+                android:layout_marginHorizontal="15dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ButtonHomePage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/search_bar_background"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:text="Home Screen"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:textStyle="bold"
+                android:textColor="@color/PrimaryTextColor"
+                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="15dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:text="Clock Faces, Favourite Apps"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:textColor="@color/PrimaryTextColor"
+                android:layout_marginBottom="15dp"
+                android:layout_marginHorizontal="15dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ButtonAppDrawer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/search_bar_background"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:text="App Drawer"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:textStyle="bold"
+                android:textColor="@color/PrimaryTextColor"
+                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="15dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:text="Search Bar, Apps, Keyboard"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:textColor="@color/PrimaryTextColor"
+                android:layout_marginBottom="15dp"
+                android:layout_marginHorizontal="15dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ButtonPermissions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/search_bar_background"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:text="Permissions"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:textStyle="bold"
+                android:textColor="@color/PrimaryTextColor"
+                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="15dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:text="Launcher, Access, Privacy"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:textColor="@color/PrimaryTextColor"
+                android:layout_marginBottom="15dp"
+                android:layout_marginHorizontal="15dp"/>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/ButtonAbout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/search_bar_background"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:text="About"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:textStyle="bold"
+                android:textColor="@color/PrimaryTextColor"
+                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="15dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:text="Info, Feedback, Report"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:textColor="@color/PrimaryTextColor"
+                android:layout_marginBottom="15dp"
+                android:layout_marginHorizontal="15dp"/>
+
+        </LinearLayout>
+
+
+
+
+    </LinearLayout>
+
+</ScrollView>

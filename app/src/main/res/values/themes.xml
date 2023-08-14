@@ -1,0 +1,23 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.ClearMindLauncher" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground" >@color/PrimaryBackgroundColor</item>
+        <item name="android:windowShowWallpaper" >false</item>
+        <item name="android:navigationBarColor" >@color/PrimaryBackgroundColor</item>
+        <item name="android:colorPrimaryDark" >@color/PrimaryBackgroundColor</item>
+    </style>
+
+    <style name="Theme.ClearMindLauncher" parent="Base.Theme.ClearMindLauncher" />
+
+
+<!--    <style name="AppTheme.Wallpaper" parent="@style/Theme.AppCompat.Light.NoActionBar">-->
+<!--&lt;!&ndash;        <item name="android:windowBackground" >@android:color/transparent</item>&ndash;&gt;-->
+<!--        <item name="android:windowBackground" >@color/PrimaryBackgroundColor</item>-->
+<!--        <item name="android:windowShowWallpaper" >false</item>-->
+<!--        <item name="android:navigationBarColor" >#00ffffff</item>-->
+<!--        <item name="android:colorPrimaryDark" >#00ffffff</item>-->
+
+
+<!--    </style>-->
+
+</resources>
