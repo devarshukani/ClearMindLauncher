@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -43,9 +44,9 @@ public class AppDrawerFragment extends Fragment{
         setupSearchBar();
 
         // Request focus and show the keyboard for the search bar
-        searchEditText.requestFocus();
-        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT);
+//        searchEditText.requestFocus();
+//        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+//        imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT);
 
 
         return view;
@@ -122,8 +123,25 @@ public class AppDrawerFragment extends Fragment{
         Intent launchIntent = manager.getLaunchIntentForPackage(app.label.toString());
         if (launchIntent != null) {
             startActivity(launchIntent);
+            InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
+            searchEditText.setText("");
         }
+
+
     }
+
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//
+//        // Request focus and show the keyboard for the search bar
+//        searchEditText.requestFocus();
+//        InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+//        imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT);
+//    }
+
+
 
     private class AppAdapter extends RecyclerView.Adapter<AppDrawerFragment.AppAdapter.AppViewHolder> {
 

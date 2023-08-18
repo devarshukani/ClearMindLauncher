@@ -4,7 +4,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
@@ -19,6 +22,8 @@ public class SwipeFragment extends Fragment {
         viewPager = view.findViewById(R.id.viewPager);
 
         viewPager.setAdapter(new MyPagerAdapter(this)); // Pass 'this' which refers to the parent Fragment
+        viewPager.setPageTransformer(new CustomPageTransformer());
+
         return view;
     }
 
@@ -37,9 +42,15 @@ public class SwipeFragment extends Fragment {
             }
         }
 
+
         @Override
         public int getItemCount() {
             return 2;
         }
     }
+
+    public void switchToHomeFragment() {
+        viewPager.setCurrentItem(0);
+    }
+
 }

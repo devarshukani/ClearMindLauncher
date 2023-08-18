@@ -5,18 +5,33 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity"
     android:background="@color/PrimaryBackgroundColor">
 
-    <TextView
-        android:id="@+id/time"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/PrimaryTextColor"
-        android:text="TIME"
-        android:gravity="center"
-        android:textSize="50sp"
-        android:layout_marginTop="30dp"
-        android:fontFamily="@font/sf_pro_display_bold"/>
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/PrimaryTextColor"
+            android:text="12:45"
+            android:gravity="center"
+            android:textSize="80sp"
+            android:fontFamily="@font/sf_pro_display_bold"
+            android:layout_gravity="center"/>
+
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2">
+
+    </LinearLayout>
 
 </LinearLayout>

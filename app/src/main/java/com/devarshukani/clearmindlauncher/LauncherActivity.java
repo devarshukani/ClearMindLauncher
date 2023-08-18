@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
+import android.widget.Toast;
 
 public class LauncherActivity extends AppCompatActivity {
 
@@ -32,8 +33,18 @@ public class LauncherActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed(){
-        // do nothing
+    public void onBackPressed() {
+        // Communicate with SwipeFragment to switch to HomeFragment
+        SwipeFragment swipeFragment = (SwipeFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container); // Replace with your fragment container ID
+        if (swipeFragment != null) {
+            swipeFragment.switchToHomeFragment();
+        } else {
+            super.onBackPressed();
+        }
     }
+
+
+
+
 
 }
