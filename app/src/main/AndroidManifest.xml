@@ -6,6 +6,7 @@
         android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application
         android:allowBackup="true"
@@ -17,6 +18,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ClearMindLauncher"
         tools:targetApi="31">
+        <activity
+            android:name=".LauncherActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:stateNotNeeded="true"
+            android:theme="@style/Base.Theme.ClearMindLauncher"
+            android:windowSoftInputMode="stateVisible|adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".AppDrawerSettingsActivity"
             android:exported="false" />
@@ -32,23 +46,6 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".AppDrawerActivity"
-            android:exported="false"
-            android:theme="@style/Base.Theme.ClearMindLauncher" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:launchMode="singleTask"
-            android:stateNotNeeded="true"
-            android:theme="@style/Base.Theme.ClearMindLauncher">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.HOME" />
-                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
     </application>

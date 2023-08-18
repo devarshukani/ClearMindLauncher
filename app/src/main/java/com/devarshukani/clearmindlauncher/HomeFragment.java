@@ -1,19 +1,20 @@
 package com.devarshukani.clearmindlauncher;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+
 import android.os.Handler;
 import android.os.Looper;
 import android.view.GestureDetector;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,25 +22,20 @@ import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import android.provider.Settings;
 
-
-public class MainActivity extends AppCompatActivity implements GestureDetector.OnGestureListener{
+public class HomeFragment extends Fragment implements GestureDetector.OnGestureListener{
 
     private GestureDetector gestureDetector;
     private TextView timeTextView;
     private Handler handler;
     private Runnable updateTimeRunnable;
-
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        gestureDetector = new GestureDetector(this, this);
+        gestureDetector = new GestureDetector(getContext(), this);
 
-        timeTextView = findViewById(R.id.time);
+        timeTextView = view.findViewById(R.id.time);
 
         // Initialize the Handler
         handler = new Handler(Looper.getMainLooper());
@@ -64,30 +60,53 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         // Start updating the time
         handler.post(updateTimeRunnable);
 
+
+        return view;
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
         // Remove the callback to prevent memory leaks
         handler.removeCallbacks(updateTimeRunnable);
     }
 
-    public boolean onTouchEvent(MotionEvent event) {
-        gestureDetector.onTouchEvent(event);
-        return super.onTouchEvent(event);
+    @Override
+    public boolean onDown(@NonNull MotionEvent motionEvent) {
+        return false;
     }
 
-    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+    @Override
+    public void onShowPress(@NonNull MotionEvent motionEvent) {
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(@NonNull MotionEvent motionEvent) {
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(@NonNull MotionEvent motionEvent, @NonNull MotionEvent motionEvent1, float v, float v1) {
+        return false;
+    }
+
+    @Override
+    public void onLongPress(@NonNull MotionEvent motionEvent) {
+
+    }
+
+    @Override
+    public boolean onFling(@NonNull MotionEvent e1, @NonNull MotionEvent e2, float velocityX, float velocityY) {
         float deltaX = e2.getX() - e1.getX();
         float deltaY = e2.getY() - e1.getY();
 
         if (Math.abs(deltaX) > Math.abs(deltaY)) {
             if (deltaX < 0) {
                 // Right to left swipe detected
-                Intent intent = new Intent(MainActivity.this, AppDrawerActivity.class);
-                startActivity(intent);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+//                Intent intent = new Intent(getContext(), AppDrawerActivity.class);
+//                startActivity(intent);
+//                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
                 return true;
             } else {
@@ -100,8 +119,9 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                 return true;
             } else {
                 // Top to bottom swipe detected
+                Toast.makeText(getContext(), "Top to bottom swiped", Toast.LENGTH_SHORT).show();
                 try {
-                    @SuppressLint("WrongConstant") Object service = getSystemService("statusbar");
+                    @SuppressLint("WrongConstant") Object service = getContext().getSystemService("statusbar");
                     Class<?> statusBarManager = Class.forName("android.app.StatusBarManager");
 
                     // Determine the method to call based on Android version
@@ -117,29 +137,9 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                
             }
         }
         return false;
-    }
-
-
-
-    @Override
-    public boolean onDown(MotionEvent e) {return true;}
-    @Override
-    public void onShowPress(MotionEvent e) {}
-    @Override
-    public boolean onSingleTapUp(MotionEvent e) {return false;}
-    @Override
-    public boolean onScroll(@NonNull MotionEvent motionEvent, @NonNull MotionEvent motionEvent1, float v, float v1) {return false;}
-    @Override
-    public void onLongPress(MotionEvent e) {}
-    @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {super.onPointerCaptureChanged(hasCapture);}
-
-
-    @Override
-    public void onBackPressed(){
-        // do nothing
     }
 }
