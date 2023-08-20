@@ -20,7 +20,8 @@
             android:text="12:45"
             android:gravity="center"
             android:textSize="80sp"
-            android:fontFamily="@font/sf_pro_display_bold"
+            android:fontFamily="@font/sf_pro_display_regular"
+            android:textStyle="bold"
             android:layout_gravity="center"/>
 
     </LinearLayout>

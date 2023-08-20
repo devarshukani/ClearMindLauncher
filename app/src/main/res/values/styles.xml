@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="CustomSpinnerStyle" parent="Widget.AppCompat.Spinner">
+        <item name="android:background">@drawable/spinner_background</item>
+        <item name="android:dropDownVerticalOffset">8dp</item>
+        <item name="android:textColor">@android:color/white</item> <!-- Set text color to white -->
+    </style>
+
+</resources>

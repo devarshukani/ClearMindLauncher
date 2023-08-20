@@ -43,7 +43,7 @@ public class AppDrawerFragment extends Fragment{
         setupRecyclerView(view);
         setupSearchBar();
 
-        // Request focus and show the keyboard for the search bar
+//         Request focus and show the keyboard for the search bar
 //        searchEditText.requestFocus();
 //        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 //        imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT);
@@ -122,10 +122,11 @@ public class AppDrawerFragment extends Fragment{
     private void launchApp(AppDrawerFragment.AppListItem app) {
         Intent launchIntent = manager.getLaunchIntentForPackage(app.label.toString());
         if (launchIntent != null) {
-            startActivity(launchIntent);
             InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
+            searchEditText.clearFocus();
             searchEditText.setText("");
+            startActivity(launchIntent);
         }
 
 
