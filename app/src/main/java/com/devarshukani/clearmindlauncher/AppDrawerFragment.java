@@ -1,9 +1,15 @@
 package com.devarshukani.clearmindlauncher;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
+import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -19,7 +26,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -64,10 +73,9 @@ public class AppDrawerFragment extends Fragment{
             InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT);
         }
-
-        // Reload the list of apps to include any newly installed apps
         loadApps();
-        setupRecyclerView(getView()); // Update the RecyclerView with the new app list
+        setupRecyclerView(getView());
+        setupSearchBar();
     }
 
 
@@ -151,6 +159,39 @@ public class AppDrawerFragment extends Fragment{
 
     }
 
+    private void showCustomDialog(AppDrawerFragment.AppListItem app) {
+        // Inflate the custom dialog layout
+        View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_app_info, null);
+
+        ImageView imageViewAppIcon = dialogView.findViewById(R.id.imageViewAppIcon);
+        TextView textViewAppName = dialogView.findViewById(R.id.textViewAppName);
+        TextView buttonAppInfo = dialogView.findViewById(R.id.buttonAppInfo);
+
+        // Set app information in the dialog views
+        imageViewAppIcon.setImageDrawable((Drawable) app.icon);
+        textViewAppName.setText(app.name);
+
+        // Build and show the custom dialog with the custom style
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.AppTheme_Dialog);
+        dialogBuilder.setView(dialogView);
+
+        AlertDialog dialog = dialogBuilder.create();
+
+        // Set the click listener for the "App Info" button
+        buttonAppInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                intent.setData(Uri.parse("package:" + app.label.toString()));
+                startActivity(intent);
+
+                dialog.dismiss(); // Dismiss the dialog after opening app settings
+            }
+        });
+
+        dialog.show();
+    }
+
 
 
 
@@ -178,6 +219,15 @@ public class AppDrawerFragment extends Fragment{
                 @Override
                 public void onClick(View v) {
                     launchApp(app);
+                }
+            });
+
+            // Long-press action to show the custom dialog
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    showCustomDialog(app);
+                    return true; // Consume the event
                 }
             });
         }

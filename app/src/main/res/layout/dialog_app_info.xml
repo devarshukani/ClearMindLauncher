@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    app:cardBackgroundColor="@color/SecondaryBackgroundColor">
+
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/imageViewAppIcon"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="5dp"/>
+
+    <TextView
+        android:id="@+id/textViewAppName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textSize="22sp"
+        android:layout_marginBottom="20dp"
+        android:fontFamily="@font/sf_pro_display_regular"
+        android:textStyle="bold"
+        android:textColor="@color/PrimaryTextColor"
+        android:text="App Name" />
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buttonPauseApp"
+            android:text="Pause App"
+            android:textSize="18sp"
+            android:background="@drawable/button_primary_background"
+            android:textColor="@color/PrimaryTextColor"
+            android:padding="18dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="0dp"
+            android:textAllCaps="false"
+            android:stateListAnimator="@null"
+            android:fontFamily="@font/sf_pro_display_regular"
+            android:layout_marginBottom="16dp"/>
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/buttonAppInfo"
+        android:text="App Info"
+        android:textSize="18sp"
+        android:background="@drawable/button_primary_background"
+        android:textColor="@color/PrimaryTextColor"
+        android:padding="18dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="0dp"
+        android:textAllCaps="false"
+        android:stateListAnimator="@null"
+        android:fontFamily="@font/sf_pro_display_regular"/>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
