@@ -74,6 +74,14 @@ public class AppDrawerFragment extends Fragment{
             imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT);
         }
 
+        boolean showAppIcons = (boolean) SharedPreferencesHelper.getData(getContext(), "AppDrawerShowAppIcons", false);
+        AppAdapter adapter = (AppAdapter) recyclerView.getAdapter();
+
+        if (adapter != null) {
+            adapter.updateAppIconVisibility(showAppIcons);
+        }
+
+
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_PACKAGE_ADDED);
         filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
@@ -237,6 +245,12 @@ public class AppDrawerFragment extends Fragment{
         public void onBindViewHolder(@NonNull AppDrawerFragment.AppAdapter.AppViewHolder holder, int position) {
             AppDrawerFragment.AppListItem app = appsList.get(position);
             holder.appName.setText(app.name);
+            if (app.showIcon) {
+                holder.appIcon.setVisibility(View.VISIBLE);
+                holder.appIcon.setImageDrawable((Drawable) app.icon);
+            } else {
+                holder.appIcon.setVisibility(View.GONE);
+            }
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -244,6 +258,7 @@ public class AppDrawerFragment extends Fragment{
                     launchApp(app);
                 }
             });
+
 
             // Long-press action to show the custom dialog
             holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -255,6 +270,13 @@ public class AppDrawerFragment extends Fragment{
             });
         }
 
+        public void updateAppIconVisibility(boolean showIcons) {
+            for (AppListItem app : appsList) {
+                app.showIcon = showIcons;
+            }
+            notifyDataSetChanged();
+        }
+
         @Override
         public int getItemCount() {
             return appsList.size();
@@ -263,10 +285,12 @@ public class AppDrawerFragment extends Fragment{
         class AppViewHolder extends RecyclerView.ViewHolder {
 
             TextView appName;
+            ImageView appIcon;
 
             public AppViewHolder(@NonNull View itemView) {
                 super(itemView);
                 appName = itemView.findViewById(R.id.name);
+                appIcon = itemView.findViewById(R.id.imageViewAppLogo);
             }
         }
     }
@@ -274,6 +298,7 @@ public class AppDrawerFragment extends Fragment{
     private static class AppListItem {
         CharSequence label;
         CharSequence name;
-        Object icon;
+        Drawable icon;
+        boolean showIcon;
     }
 }

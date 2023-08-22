@@ -2,22 +2,32 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:padding="10dp"
+    android:orientation="horizontal"
     android:background="@drawable/app_item_background"
     android:layout_marginLeft="15dp"
-    android:layout_marginRight="15dp">
+    android:layout_marginRight="15dp"
+    android:paddingLeft="10dp"
+    android:layout_marginVertical="3dp">
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/imageViewAppLogo"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:visibility="gone"
+        android:layout_marginRight="10dp"
+        android:layout_gravity="center"
+
+        />
 
     <TextView
         android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
         android:textSize="22sp"
         android:textColor="@color/PrimaryTextColor"
         android:fontFamily="@font/sf_pro_display_regular"
         android:text="App Name"
-        android:layout_gravity="left"/>
+        android:layout_gravity="center"
+        android:paddingVertical="12dp"/>
 
 </LinearLayout>

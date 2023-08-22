@@ -39,6 +39,8 @@ public class AppDrawerSettingsActivity extends AppCompatActivity {
         boolean alwaysShowKeyboard = (boolean) SharedPreferencesHelper.getData(this, "AppDrawerAlwaysShowKeyboard", false);
         switchAlwaysShowKeyboard.setChecked(alwaysShowKeyboard);
 
+        boolean showAppIcons = (boolean) SharedPreferencesHelper.getData(this, "AppDrawerShowAppIcons", false);
+        switchShowAppIcons.setChecked(showAppIcons);
 
 
         // Update The Preferences on Change
@@ -47,6 +49,14 @@ public class AppDrawerSettingsActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // Update the preference when the switch state changes
                 SharedPreferencesHelper.saveData(AppDrawerSettingsActivity.this, "AppDrawerAlwaysShowKeyboard", isChecked);
+            }
+        });
+
+        switchShowAppIcons.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // Update the preference when the switch state changes
+                SharedPreferencesHelper.saveData(AppDrawerSettingsActivity.this, "AppDrawerShowAppIcons", isChecked);
             }
         });
 
