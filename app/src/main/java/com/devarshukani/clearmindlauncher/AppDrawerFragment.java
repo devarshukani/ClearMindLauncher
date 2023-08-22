@@ -52,6 +52,25 @@ public class AppDrawerFragment extends Fragment{
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        boolean alwaysShowKeyboard = (boolean) SharedPreferencesHelper.getData(getContext(), "AppDrawerAlwaysShowKeyboard", false);
+
+        if (alwaysShowKeyboard) {
+            // Request focus and show the keyboard for the search bar
+            searchEditText.requestFocus();
+            InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT);
+        }
+
+        // Reload the list of apps to include any newly installed apps
+        loadApps();
+        setupRecyclerView(getView()); // Update the RecyclerView with the new app list
+    }
+
+
     private void loadApps() {
         manager = getContext().getPackageManager();
         apps = new ArrayList<>();
@@ -132,21 +151,6 @@ public class AppDrawerFragment extends Fragment{
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        boolean alwaysShowKeyboard = (boolean) SharedPreferencesHelper.getData(getContext(), "AppDrawerAlwaysShowKeyboard", false);
-
-        if(alwaysShowKeyboard){
-            // Request focus and show the keyboard for the search bar
-            searchEditText.requestFocus();
-            InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT);
-        }
-
-
-    }
 
 
 
