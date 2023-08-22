@@ -73,10 +73,33 @@ public class AppDrawerFragment extends Fragment{
             InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT);
         }
-        loadApps();
-        setupRecyclerView(getView());
-        setupSearchBar();
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_PACKAGE_ADDED);
+        filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
+        filter.addDataScheme("package");
+        getContext().registerReceiver(appInstallReceiver, filter);
+
+//        loadApps();
+//        setupRecyclerView(getView());
+//        setupSearchBar();
     }
+
+    private BroadcastReceiver appInstallReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction() != null) {
+                if (intent.getAction().equals(Intent.ACTION_PACKAGE_ADDED) ||
+                        intent.getAction().equals(Intent.ACTION_PACKAGE_REMOVED)) {
+
+                    // Reload the app list
+                    loadApps();
+                    setupRecyclerView(getView());
+
+                }
+            }
+        }
+    };
 
 
     private void loadApps() {
