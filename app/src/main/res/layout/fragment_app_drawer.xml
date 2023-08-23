@@ -18,6 +18,7 @@
     <EditText
         android:id="@+id/ETHomeSearchField"
         android:hint="Search"
+        android:inputType="text"
         android:background="@drawable/search_bar_background"
         android:paddingTop="12dp"
         android:paddingHorizontal="20dp"
