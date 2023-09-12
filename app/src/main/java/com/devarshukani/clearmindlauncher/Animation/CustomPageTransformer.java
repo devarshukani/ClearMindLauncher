@@ -1,4 +1,4 @@
-package com.devarshukani.clearmindlauncher;
+package com.devarshukani.clearmindlauncher.Animation;
 
 import android.view.View;
 import androidx.annotation.NonNull;

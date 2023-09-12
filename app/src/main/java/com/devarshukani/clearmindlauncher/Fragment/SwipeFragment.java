@@ -1,17 +1,17 @@
-package com.devarshukani.clearmindlauncher;
+package com.devarshukani.clearmindlauncher.Fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
+
+import com.devarshukani.clearmindlauncher.Animation.CustomPageTransformer;
+import com.devarshukani.clearmindlauncher.R;
 
 public class SwipeFragment extends Fragment {
     private ViewPager2 viewPager;

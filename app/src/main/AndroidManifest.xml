@@ -19,7 +19,7 @@
         android:theme="@style/Theme.ClearMindLauncher"
         tools:targetApi="31">
         <activity
-            android:name=".LauncherActivity"
+            android:name=".Activity.LauncherActivity"
             android:exported="true"
             android:launchMode="singleTask"
             android:stateNotNeeded="true"
@@ -32,14 +32,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AppDrawerSettingsActivity"
+            android:name=".Activity.AppDrawerSettingsActivity"
             android:exported="false" />
         <activity
-            android:name=".SettingsActivity"
+            android:name=".Activity.SettingsActivity"
             android:exported="false"
             android:theme="@style/Base.Theme.ClearMindLauncher" />
         <activity
-            android:name=".Onboarding1Activity"
+            android:name=".Activity.Onboarding1Activity"
             android:exported="true"
             android:theme="@style/Base.Theme.ClearMindLauncher">
             <intent-filter>

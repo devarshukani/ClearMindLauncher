@@ -1,4 +1,4 @@
-package com.devarshukani.clearmindlauncher;
+package com.devarshukani.clearmindlauncher.Helper;
 
 import android.content.Context;
 import android.content.SharedPreferences;

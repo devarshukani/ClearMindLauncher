@@ -1,4 +1,4 @@
-package com.devarshukani.clearmindlauncher;
+package com.devarshukani.clearmindlauncher.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,8 +6,9 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.view.View;
-import android.widget.Toast;
+
+import com.devarshukani.clearmindlauncher.R;
+import com.devarshukani.clearmindlauncher.Fragment.SwipeFragment;
 
 public class LauncherActivity extends AppCompatActivity {
 

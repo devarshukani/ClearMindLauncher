@@ -1,7 +1,6 @@
-package com.devarshukani.clearmindlauncher;
+package com.devarshukani.clearmindlauncher.Fragment;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -17,8 +16,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Handler;
-import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -28,7 +25,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.devarshukani.clearmindlauncher.R;
+import com.devarshukani.clearmindlauncher.Helper.SharedPreferencesHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -173,7 +172,10 @@ public class AppDrawerFragment extends Fragment{
         recyclerView.setAdapter(adapter);
 
         if (filteredApps.size() == 1) {
-            launchApp(filteredApps.get(0));
+            boolean autoStartApp = (boolean) SharedPreferencesHelper.getData(getContext(), "AppDrawerAutoStartApp", true);
+            if(autoStartApp){
+                launchApp(filteredApps.get(0));
+            }
         }
     }
 

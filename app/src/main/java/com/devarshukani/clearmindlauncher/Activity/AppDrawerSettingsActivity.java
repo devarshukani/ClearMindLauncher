@@ -1,4 +1,4 @@
-package com.devarshukani.clearmindlauncher;
+package com.devarshukani.clearmindlauncher.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,8 +6,9 @@ import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.Spinner;
-import android.widget.Switch;
 
+import com.devarshukani.clearmindlauncher.R;
+import com.devarshukani.clearmindlauncher.Helper.SharedPreferencesHelper;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
 public class AppDrawerSettingsActivity extends AppCompatActivity {
@@ -39,6 +40,9 @@ public class AppDrawerSettingsActivity extends AppCompatActivity {
         boolean alwaysShowKeyboard = (boolean) SharedPreferencesHelper.getData(this, "AppDrawerAlwaysShowKeyboard", false);
         switchAlwaysShowKeyboard.setChecked(alwaysShowKeyboard);
 
+        boolean autoStartApp = (boolean) SharedPreferencesHelper.getData(this, "AppDrawerAutoStartApp", true);
+        switchAutoStartApp.setChecked(autoStartApp);
+
         boolean showAppIcons = (boolean) SharedPreferencesHelper.getData(this, "AppDrawerShowAppIcons", false);
         switchShowAppIcons.setChecked(showAppIcons);
 
@@ -51,6 +55,15 @@ public class AppDrawerSettingsActivity extends AppCompatActivity {
                 SharedPreferencesHelper.saveData(AppDrawerSettingsActivity.this, "AppDrawerAlwaysShowKeyboard", isChecked);
             }
         });
+
+
+        switchAutoStartApp.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedPreferencesHelper.saveData(AppDrawerSettingsActivity.this, "AppDrawerAutoStartApp", isChecked);
+            }
+        });
+
 
         switchShowAppIcons.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
