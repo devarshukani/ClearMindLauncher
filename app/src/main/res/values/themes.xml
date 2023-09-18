@@ -5,6 +5,7 @@
         <item name="android:windowShowWallpaper" >false</item>
         <item name="android:navigationBarColor" >@color/PrimaryBackgroundColor</item>
         <item name="android:colorPrimaryDark" >@color/PrimaryBackgroundColor</item>
+        <item name="android:windowAnimationStyle">@style/CustomActivityAnimations</item>
     </style>
 
     <style name="Theme.ClearMindLauncher" parent="Base.Theme.ClearMindLauncher" />

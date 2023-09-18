@@ -29,6 +29,13 @@ public class SettingsActivity extends AppCompatActivity {
         ButtonPermissions = findViewById(R.id.ButtonPermissions);
         ButtonAbout = findViewById(R.id.ButtonPermissions);
 
+        ButtonHomePage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SettingsActivity.this, HomeScreenSettingsActivity.class);
+                startActivity(intent);
+            }
+        });
 
         ButtonAppDrawer.setOnClickListener(new View.OnClickListener() {
             @Override

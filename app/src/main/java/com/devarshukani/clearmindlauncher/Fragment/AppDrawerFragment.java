@@ -23,9 +23,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.devarshukani.clearmindlauncher.Activity.SettingsActivity;
 import com.devarshukani.clearmindlauncher.R;
 import com.devarshukani.clearmindlauncher.Helper.SharedPreferencesHelper;
 
@@ -40,6 +42,7 @@ public class AppDrawerFragment extends Fragment{
     private List<AppDrawerFragment.AppListItem> apps;
     private RecyclerView recyclerView;
     private EditText searchEditText;
+    private ImageButton btnSettings;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -47,6 +50,7 @@ public class AppDrawerFragment extends Fragment{
         // Add your logic and UI elements for the second fragment
 
         searchEditText = view.findViewById(R.id.ETHomeSearchField);
+        btnSettings = view.findViewById(R.id.btnSettings);
         loadApps();
         setupRecyclerView(view);
         setupSearchBar();
@@ -56,6 +60,13 @@ public class AppDrawerFragment extends Fragment{
 //        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 //        imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT);
 
+        btnSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), SettingsActivity.class);
+                startActivity(intent);
+            }
+        });
 
         return view;
     }
