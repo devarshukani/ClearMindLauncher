@@ -2,16 +2,26 @@ package com.devarshukani.clearmindlauncher.Activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
+import android.util.Log;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.devarshukani.clearmindlauncher.Adapter.AppListAdapter;
 import com.devarshukani.clearmindlauncher.Fragment.AppDrawerFragment;
 import com.devarshukani.clearmindlauncher.R;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -30,14 +40,15 @@ public class FavouriteAppsSettingsActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.app_list_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        // Retrieve selected apps from SharedPreferences and pass them to the adapter
+        List<AppDrawerFragment.AppListItem> selectedApps = retrieveSelectedAppsFromSharedPreferences();
         List<AppDrawerFragment.AppListItem> appList = getAppsInAppDrawer();
-        adapter = new AppListAdapter(this, appList);
+        adapter = new AppListAdapter(this, appList, selectedApps);
         recyclerView.setAdapter(adapter);
     }
 
     private List<AppDrawerFragment.AppListItem> getAppsInAppDrawer() {
         PackageManager packageManager = getPackageManager();
-//        List<ApplicationInfo> appList = new ArrayList<>();
         List<AppDrawerFragment.AppListItem> apps = new ArrayList<>();
 
         Intent intent = new Intent(Intent.ACTION_MAIN, null);
@@ -62,6 +73,48 @@ public class FavouriteAppsSettingsActivity extends AppCompatActivity {
         });
 
         return apps;
-
     }
+
+    // Retrieve selected apps from SharedPreferences
+    private List<AppDrawerFragment.AppListItem> retrieveSelectedAppsFromSharedPreferences() {
+        SharedPreferences preferences = getSharedPreferences("ClearMindSettings", Context.MODE_PRIVATE);
+        String selectedAppsJson = preferences.getString("HomeScreenFavouriteSelectedAppsList", null);
+
+        List<AppDrawerFragment.AppListItem> selectedApps = new ArrayList<>();
+
+        if (selectedAppsJson != null) {
+            try {
+                // Parse the JSON array of app names and package names
+                JSONArray jsonArray = new JSONArray(selectedAppsJson);
+
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    String appNameAndPackage = jsonArray.getString(i);
+                    String[] parts = appNameAndPackage.split("\\|");
+
+                    if (parts.length == 2) {
+                        AppDrawerFragment.AppListItem appItem = new AppDrawerFragment.AppListItem();
+                        appItem.name = parts[0];
+                        appItem.label = parts[1];
+
+
+                        // You can add more properties like icon if needed
+
+                        selectedApps.add(appItem);
+
+                        Log.d("DATA CHECK", appItem.name.toString());
+                        Log.d("DATA CHECK", appItem.label.toString());
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+
+        return selectedApps;
+    }
+
+
+
 }
