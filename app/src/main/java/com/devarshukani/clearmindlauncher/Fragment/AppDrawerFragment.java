@@ -308,10 +308,10 @@ public class AppDrawerFragment extends Fragment{
         }
     }
 
-    private static class AppListItem {
-        CharSequence label;
-        CharSequence name;
-        Drawable icon;
+    public static class AppListItem {
+        public CharSequence label;
+        public CharSequence name;
+        public Drawable icon;
         boolean showIcon;
     }
 }

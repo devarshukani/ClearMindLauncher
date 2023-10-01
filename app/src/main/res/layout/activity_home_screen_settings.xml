@@ -24,6 +24,7 @@
             android:layout_marginTop="30dp"/>
 
         <LinearLayout
+            android:id="@+id/ButtonClockFaces"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/search_bar_background"
@@ -63,6 +64,7 @@
 
 
         <LinearLayout
+            android:id="@+id/ButtonFavouriteApps"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/search_bar_background"

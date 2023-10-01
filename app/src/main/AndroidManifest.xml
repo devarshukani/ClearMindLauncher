@@ -19,6 +19,9 @@
         android:theme="@style/Theme.ClearMindLauncher"
         tools:targetApi="31">
         <activity
+            android:name=".Activity.FavouriteAppsSettingsActivity"
+            android:exported="false" />
+        <activity
             android:name=".Activity.HomeScreenSettingsActivity"
             android:exported="false" />
         <activity
@@ -46,11 +49,13 @@
             android:name=".Activity.Onboarding1Activity"
             android:exported="true"
             android:theme="@style/Base.Theme.ClearMindLauncher">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
 
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
     </application>
 
