@@ -41,7 +41,7 @@ public class FavouriteAppsSettingsActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Retrieve selected apps from SharedPreferences and pass them to the adapter
-        List<AppDrawerFragment.AppListItem> selectedApps = retrieveSelectedAppsFromSharedPreferences();
+        List<AppDrawerFragment.AppListItem> selectedApps = null;
         List<AppDrawerFragment.AppListItem> appList = getAppsInAppDrawer();
         adapter = new AppListAdapter(this, appList, selectedApps);
         recyclerView.setAdapter(adapter);
@@ -65,56 +65,9 @@ public class FavouriteAppsSettingsActivity extends AppCompatActivity {
             apps.add(app);
         }
 
-        Collections.sort(apps, new Comparator<AppDrawerFragment.AppListItem>() {
-            @Override
-            public int compare(AppDrawerFragment.AppListItem app1, AppDrawerFragment.AppListItem app2) {
-                return app1.name.toString().compareToIgnoreCase(app2.name.toString());
-            }
-        });
 
         return apps;
     }
-
-    // Retrieve selected apps from SharedPreferences
-    private List<AppDrawerFragment.AppListItem> retrieveSelectedAppsFromSharedPreferences() {
-        SharedPreferences preferences = getSharedPreferences("ClearMindSettings", Context.MODE_PRIVATE);
-        String selectedAppsJson = preferences.getString("HomeScreenFavouriteSelectedAppsList", null);
-
-        List<AppDrawerFragment.AppListItem> selectedApps = new ArrayList<>();
-
-        if (selectedAppsJson != null) {
-            try {
-                // Parse the JSON array of app names and package names
-                JSONArray jsonArray = new JSONArray(selectedAppsJson);
-
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    String appNameAndPackage = jsonArray.getString(i);
-                    String[] parts = appNameAndPackage.split("\\|");
-
-                    if (parts.length == 2) {
-                        AppDrawerFragment.AppListItem appItem = new AppDrawerFragment.AppListItem();
-                        appItem.name = parts[0];
-                        appItem.label = parts[1];
-
-
-                        // You can add more properties like icon if needed
-
-                        selectedApps.add(appItem);
-
-                        Log.d("DATA CHECK", appItem.name.toString());
-                        Log.d("DATA CHECK", appItem.label.toString());
-                    }
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-
-
-        return selectedApps;
-    }
-
 
 
 }
