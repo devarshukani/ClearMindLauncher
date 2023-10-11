@@ -29,6 +29,9 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.ViewHold
     private List<Boolean> checkedStates; // Maintain a list to track checkbox states
     private PackageManager packageManager;
 
+    private static final int MAX_SELECTIONS = 5;
+    private int selectedCount = 0;
+
     public AppListAdapter(Context context, List<AppDrawerFragment.AppListItem> appList, List<AppDrawerFragment.AppListItem> selectedApps) {
         this.context = context;
         this.packageManager = context.getPackageManager();
@@ -51,8 +54,17 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.ViewHold
 
         // Implement an OnClickListener to toggle checkbox state
         holder.appCheckBox.setOnClickListener(v -> {
-            boolean newState = !checkedStates.get(position);
-            checkedStates.set(position, newState);
+            if (checkedStates.get(position)) {
+                // If the checkbox is already checked, uncheck it and decrement the count
+                checkedStates.set(position, false);
+                selectedCount--;
+            } else if (selectedCount < MAX_SELECTIONS) {
+                // If not checked and within the limit, check it and increment the count
+                checkedStates.set(position, true);
+                selectedCount++;
+            }
+
+            notifyDataSetChanged(); // Update the UI
             // Do any additional logic here (e.g., saving the updated list of selected apps)
         });
     }
