@@ -112,46 +112,67 @@ public class HomeFragment extends Fragment implements GestureDetector.OnGestureL
     }
 
     private List<AppDrawerFragment.AppListItem> retrieveSelectedAppsFromSharedPreferences() {
-        SharedPreferences preferences = getSharedPreferences(getContext());
-        String selectedAppsJson = preferences.getString("HomeScreenFavouriteSelectedAppsList", null);
-
+        SharedPreferences sharedPreferences = getSharedPreferences( getContext());
+        String selectedAppsString = sharedPreferences.getString("selected_apps", null);
+        Log.d("Debug", "SelectedAppsString: " + selectedAppsString);
         List<AppDrawerFragment.AppListItem> selectedApps = new ArrayList<>();
 
-        if (selectedAppsJson != null) {
-            try {
-                // Parse the JSON array of app names and package names
-                JSONArray jsonArray = new JSONArray(selectedAppsJson);
-
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    String appNameAndPackage = jsonArray.getString(i);
-                    String[] parts = appNameAndPackage.split("\\|");
-
-                    if (parts.length == 2) {
-                        AppDrawerFragment.AppListItem appItem = new AppDrawerFragment.AppListItem();
-                        appItem.name = parts[0];
-                        appItem.label = parts[1];
-
-
-                        // You can add more properties like icon if needed
-
-                        selectedApps.add(appItem);
-
-                        Log.d("DATA CHECK", appItem.name.toString());
-                        Log.d("DATA CHECK", appItem.label.toString());
-                    }
+        if (selectedAppsString != null && !selectedAppsString.isEmpty()) {
+            String[] appStrings = selectedAppsString.split(",");
+            for (String appString : appStrings) {
+                String[] appData = appString.split("\\|");
+                if (appData.length == 2) {
+                    AppDrawerFragment.AppListItem app = new AppDrawerFragment.AppListItem();
+                    app.name = appData[0];
+                    app.label = appData[1];
+                    selectedApps.add(app);
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
         }
 
-
-
         return selectedApps;
+
+
+//        SharedPreferences preferences = getSharedPreferences(getContext());
+//        String selectedAppsJson = preferences.getString("selected_apps", null);
+//
+//        List<AppDrawerFragment.AppListItem> selectedApps = new ArrayList<>();
+//
+//        if (selectedAppsJson != null) {
+//            try {
+//                // Parse the JSON array of app names and package names
+//                JSONArray jsonArray = new JSONArray(selectedAppsJson);
+//
+//                for (int i = 0; i < jsonArray.length(); i++) {
+//                    String appNameAndPackage = jsonArray.getString(i);
+//                    String[] parts = appNameAndPackage.split("\\|");
+//
+//                    if (parts.length == 2) {
+//                        AppDrawerFragment.AppListItem appItem = new AppDrawerFragment.AppListItem();
+//                        appItem.name = parts[0];
+//                        appItem.label = parts[1];
+//
+//
+//                        // You can add more properties like icon if needed
+//
+//                        selectedApps.add(appItem);
+//
+//                        Log.d("DATA CHECK", appItem.name.toString());
+//                        Log.d("DATA CHECK", appItem.label.toString());
+//                    }
+//                }
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//
+//
+//        return selectedApps;
     }
 
     private static SharedPreferences getSharedPreferences(Context context) {
-        return context.getSharedPreferences("ClearMindSettings", Context.MODE_PRIVATE);
+        return context.getSharedPreferences("SelectedApps", Context.MODE_PRIVATE);
     }
 
 

@@ -34,6 +34,7 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.ViewHold
         this.appList = appList;
         this.checkedStates = new ArrayList<>(Collections.nCopies(appList.size(), false));
         this.selectedApps = selectedApps;
+        selectedCount = selectedApps.size();
         setInitialCheckboxStates();
     }
 
