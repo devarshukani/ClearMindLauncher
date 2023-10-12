@@ -59,7 +59,7 @@
 
             </LinearLayout>
 
-            <com.google.android.material.switchmaterial.SwitchMaterial
+            <com.google.android.material.materialswitch.MaterialSwitch
                 android:id="@+id/switchAlwaysShowKeyboard"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -107,7 +107,7 @@
 
             </LinearLayout>
 
-            <com.google.android.material.switchmaterial.SwitchMaterial
+            <com.google.android.material.materialswitch.MaterialSwitch
                 android:id="@+id/switchAutoStartApp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -155,14 +155,14 @@
 
             </LinearLayout>
 
-            <com.google.android.material.switchmaterial.SwitchMaterial
+            <com.google.android.material.materialswitch.MaterialSwitch
                 android:id="@+id/switchShowAppIcons"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginRight="15dp"
-                app:thumbTint="@android:color/white"
-                app:trackTint="@color/switch_track_tint_selector" />
+                app:thumbTint="@color/PrimaryTextColor"
+                app:trackTint="@color/switch_track_tint_selector"/>
 
 
         </LinearLayout>

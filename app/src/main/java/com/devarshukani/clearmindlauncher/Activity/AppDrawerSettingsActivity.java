@@ -9,14 +9,15 @@ import android.widget.Spinner;
 
 import com.devarshukani.clearmindlauncher.R;
 import com.devarshukani.clearmindlauncher.Helper.SharedPreferencesHelper;
+import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
 public class AppDrawerSettingsActivity extends AppCompatActivity {
 
 
-    SwitchMaterial switchAlwaysShowKeyboard;
-    SwitchMaterial switchAutoStartApp;
-    SwitchMaterial switchShowAppIcons;
+    MaterialSwitch switchAlwaysShowKeyboard;
+    MaterialSwitch switchAutoStartApp;
+    MaterialSwitch switchShowAppIcons;
 //    SwitchMaterial switchHidePausedApps;
 //    Spinner spinnerSearchBarPosition;
 

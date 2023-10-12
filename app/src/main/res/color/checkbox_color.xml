@@ -1,0 +1,7 @@
+<!-- res/color/checkbox_color.xml -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Unchecked state -->
+    <item android:color="@color/SecondaryTextColor" android:state_checked="false" />
+    <!-- Checked state -->
+    <item android:color="@color/PrimaryTextColor" android:state_checked="true" />
+</selector>
