@@ -2,8 +2,12 @@ package com.devarshukani.clearmindlauncher.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.WallpaperManager;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.provider.Settings;
 
@@ -36,6 +40,8 @@ public class LauncherActivity extends AppCompatActivity {
         });
         mHomeWatcher.startWatch();
 
+        setWallpaper();
+
 
     }
 
@@ -59,6 +65,23 @@ public class LauncherActivity extends AppCompatActivity {
             swipeFragment.switchToHomeFragment();
         } else {
             super.onBackPressed();
+        }
+    }
+
+    private void setWallpaper() {
+        WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
+
+        try {
+            // Create a black bitmap
+            int width = getResources().getDisplayMetrics().widthPixels;
+            int height = getResources().getDisplayMetrics().heightPixels;
+            Bitmap blackBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            blackBitmap.eraseColor(Color.BLACK);
+
+            // Set the black bitmap as the wallpaper
+            wallpaperManager.setBitmap(blackBitmap);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
