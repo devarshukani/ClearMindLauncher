@@ -5,8 +5,8 @@ import androidx.annotation.NonNull;
 import androidx.viewpager2.widget.ViewPager2;
 
 public class CustomPageTransformer implements ViewPager2.PageTransformer {
-    private static final float MIN_SCALE = 0.99f;
-    private static final float MIN_ALPHA = 0.7f;
+    private static final float MIN_SCALE = 0.9999f;
+    private static final float MIN_ALPHA = 0.8f;
     private static final int ANIMATION_DURATION = 1200; // Adjust the duration as needed for slower animation
 
     @Override
@@ -20,19 +20,19 @@ public class CustomPageTransformer implements ViewPager2.PageTransformer {
             // Apply smooth movement animation based on the 'position' value
             float scaleFactor = Math.max(MIN_SCALE, 1 - Math.abs(position));
             float verticalMargin = pageHeight * (1 - scaleFactor) / 2;
-            float horizontalMargin = pageWidth * (1 - scaleFactor) / 2;
+
+            // Set the horizontal translation to keep the page centered
+            page.setTranslationX(0);
 
             if (position < 0) { // Page is sliding to the left
-                page.setTranslationX(horizontalMargin - verticalMargin / 2);
+                // Slide from the bottom center to the top center
+                page.setTranslationY(verticalMargin * position);
             } else { // Page is sliding to the right
-                page.setTranslationX(-horizontalMargin + verticalMargin / 2);
+                // Slide from the bottom center to the top center
+                page.setTranslationY(-verticalMargin * position);
             }
 
-            // Smoothly move the page
-            float distance = pageWidth * position;
-            page.setTranslationX(distance);
-
-            // Scale the page's content (views)
+            // Smoothly scale the page's content (views)
             page.setScaleX(scaleFactor);
             page.setScaleY(scaleFactor);
 
