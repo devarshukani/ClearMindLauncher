@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.AlarmClock;
+import android.provider.CalendarContract;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -58,6 +60,37 @@ public class HomeFragment extends Fragment implements GestureDetector.OnGestureL
 
         timeTextView = view.findViewById(R.id.time);
         dateTextView = view.findViewById(R.id.date);
+
+        timeTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AlarmClock.ACTION_SHOW_ALARMS);
+                PackageManager packageManager = view.getContext().getPackageManager();
+
+                if (intent.resolveActivity(packageManager) != null) {
+                    view.getContext().startActivity(intent);
+                } else {
+                    // Handle the case where the clock app is not available on the device
+                }
+            }
+        });
+
+
+        dateTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.addCategory(Intent.CATEGORY_APP_CALENDAR);
+                PackageManager packageManager = view.getContext().getPackageManager();
+
+                if (intent.resolveActivity(packageManager) != null) {
+                    view.getContext().startActivity(intent);
+                } else {
+                    // Handle the case where the calendar app is not available on the device
+                }
+            }
+        });
+
 
         setDate();
 
