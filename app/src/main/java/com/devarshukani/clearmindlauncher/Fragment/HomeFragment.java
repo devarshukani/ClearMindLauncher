@@ -44,7 +44,7 @@ import java.util.Locale;
 public class HomeFragment extends Fragment implements GestureDetector.OnGestureListener{
 
     private GestureDetector gestureDetector;
-    private TextView timeTextView;
+    private TextView timeTextView, dateTextView;
     private Handler handler;
     private Runnable updateTimeRunnable;
 
@@ -57,6 +57,9 @@ public class HomeFragment extends Fragment implements GestureDetector.OnGestureL
         gestureDetector = new GestureDetector(getContext(), this);
 
         timeTextView = view.findViewById(R.id.time);
+        dateTextView = view.findViewById(R.id.date);
+
+        setDate();
 
         // Initialize the Handler
         handler = new Handler(Looper.getMainLooper());
@@ -94,6 +97,13 @@ public class HomeFragment extends Fragment implements GestureDetector.OnGestureL
 
 
         return view;
+    }
+
+    private void setDate() {
+        Date currentDate = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, d MMMM", Locale.getDefault());
+        String formattedDate = dateFormat.format(currentDate);
+        dateTextView.setText(formattedDate);
     }
 
     @Override
