@@ -44,7 +44,7 @@
                     android:text="Clock Faces"
                     android:fontFamily="@font/sf_pro_display_regular"
                     android:textStyle="bold"
-                    android:textColor="@color/PrimaryTextColor"
+                    android:textColor="@color/SecondaryTextColor"
                     android:layout_marginTop="12dp"
                     android:layout_marginHorizontal="15dp"/>
 
@@ -57,6 +57,7 @@
                     android:textColor="@color/SecondaryTextColor"
                     android:layout_marginBottom="15dp"
                     android:layout_marginHorizontal="15dp"/>
+
 
             </LinearLayout>
 

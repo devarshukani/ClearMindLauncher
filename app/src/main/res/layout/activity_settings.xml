@@ -28,28 +28,45 @@
             android:layout_height="wrap_content"
             android:background="@drawable/search_bar_background"
             android:layout_marginTop="20dp"
-            android:orientation="vertical">
+            android:orientation="horizontal">
+            
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_customization"
+                app:tint="@color/SecondaryTextColor"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="15dp"/>
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:text="Customization"
-                android:fontFamily="@font/sf_pro_display_regular"
-                android:textStyle="bold"
-                android:textColor="@color/PrimaryTextColor"
-                android:layout_marginTop="12dp"
-                android:layout_marginHorizontal="15dp"/>
+                android:orientation="vertical">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="15sp"
-                android:text="Themes, Color, Background"
-                android:fontFamily="@font/sf_pro_display_regular"
-                android:textColor="@color/SecondaryTextColor"
-                android:layout_marginBottom="15dp"
-                android:layout_marginHorizontal="15dp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:text="Customization"
+                    android:fontFamily="@font/sf_pro_display_regular"
+                    android:textStyle="bold"
+                    android:textColor="@color/SecondaryTextColor"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginHorizontal="13dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:text="Themes, Color, Background"
+                    android:fontFamily="@font/sf_pro_display_regular"
+                    android:textColor="@color/SecondaryTextColor"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginHorizontal="13dp"/>
+                
+            </LinearLayout>
+
+            
 
         </LinearLayout>
 
@@ -59,28 +76,45 @@
             android:layout_height="wrap_content"
             android:background="@drawable/search_bar_background"
             android:layout_marginTop="20dp"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-            <TextView
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_home"
+                app:tint="@color/PrimaryTextColor"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="15dp"/>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:text="Home Screen"
-                android:fontFamily="@font/sf_pro_display_regular"
-                android:textStyle="bold"
-                android:textColor="@color/PrimaryTextColor"
-                android:layout_marginTop="12dp"
-                android:layout_marginHorizontal="15dp"/>
+                android:orientation="vertical">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="15sp"
-                android:text="Clock Faces, Favourite Apps"
-                android:fontFamily="@font/sf_pro_display_regular"
-                android:textColor="@color/SecondaryTextColor"
-                android:layout_marginBottom="15dp"
-                android:layout_marginHorizontal="15dp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:text="Home Screen"
+                    android:fontFamily="@font/sf_pro_display_regular"
+                    android:textStyle="bold"
+                    android:textColor="@color/PrimaryTextColor"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginHorizontal="15dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:text="Clock Faces, Favourite Apps"
+                    android:fontFamily="@font/sf_pro_display_regular"
+                    android:textColor="@color/SecondaryTextColor"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginHorizontal="15dp"/>
+
+            </LinearLayout>
+
+
 
         </LinearLayout>
 
@@ -90,28 +124,43 @@
             android:layout_height="wrap_content"
             android:background="@drawable/search_bar_background"
             android:layout_marginTop="20dp"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-            <TextView
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_appdrawer"
+                app:tint="@color/PrimaryTextColor"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="15dp"/>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:text="App Drawer"
-                android:fontFamily="@font/sf_pro_display_regular"
-                android:textStyle="bold"
-                android:textColor="@color/PrimaryTextColor"
-                android:layout_marginTop="12dp"
-                android:layout_marginHorizontal="15dp"/>
+                android:orientation="vertical">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="15sp"
-                android:text="Search Bar, Apps, Keyboard"
-                android:fontFamily="@font/sf_pro_display_regular"
-                android:textColor="@color/SecondaryTextColor"
-                android:layout_marginBottom="15dp"
-                android:layout_marginHorizontal="15dp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:text="App Drawer"
+                    android:fontFamily="@font/sf_pro_display_regular"
+                    android:textStyle="bold"
+                    android:textColor="@color/PrimaryTextColor"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginHorizontal="15dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:text="Search Bar, Apps, Keyboard"
+                    android:fontFamily="@font/sf_pro_display_regular"
+                    android:textColor="@color/SecondaryTextColor"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginHorizontal="15dp"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -121,28 +170,43 @@
             android:layout_height="wrap_content"
             android:background="@drawable/search_bar_background"
             android:layout_marginTop="20dp"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-            <TextView
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_permissions"
+                app:tint="@color/SecondaryTextColor"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="15dp"/>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:text="Permissions"
-                android:fontFamily="@font/sf_pro_display_regular"
-                android:textStyle="bold"
-                android:textColor="@color/PrimaryTextColor"
-                android:layout_marginTop="12dp"
-                android:layout_marginHorizontal="15dp"/>
+                android:orientation="vertical">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="15sp"
-                android:text="Launcher, Access, Privacy"
-                android:fontFamily="@font/sf_pro_display_regular"
-                android:textColor="@color/SecondaryTextColor"
-                android:layout_marginBottom="15dp"
-                android:layout_marginHorizontal="15dp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:text="Permissions"
+                    android:fontFamily="@font/sf_pro_display_regular"
+                    android:textStyle="bold"
+                    android:textColor="@color/SecondaryTextColor"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginHorizontal="12dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:text="Launcher, Access, Privacy"
+                    android:fontFamily="@font/sf_pro_display_regular"
+                    android:textColor="@color/SecondaryTextColor"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginHorizontal="12dp"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -153,28 +217,44 @@
             android:layout_height="wrap_content"
             android:background="@drawable/search_bar_background"
             android:layout_marginTop="20dp"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-            <TextView
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_about"
+                app:tint="@color/SecondaryTextColor"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="15dp"/>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:text="About"
-                android:fontFamily="@font/sf_pro_display_regular"
-                android:textStyle="bold"
-                android:textColor="@color/PrimaryTextColor"
-                android:layout_marginTop="12dp"
-                android:layout_marginHorizontal="15dp"/>
+                android:orientation="vertical">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="15sp"
-                android:text="Info, Feedback, Report"
-                android:fontFamily="@font/sf_pro_display_regular"
-                android:textColor="@color/SecondaryTextColor"
-                android:layout_marginBottom="15dp"
-                android:layout_marginHorizontal="15dp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:text="About"
+                    android:fontFamily="@font/sf_pro_display_regular"
+                    android:textStyle="bold"
+                    android:textColor="@color/SecondaryTextColor"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginHorizontal="15dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:text="Info, Feedback, Report"
+                    android:fontFamily="@font/sf_pro_display_regular"
+                    android:textColor="@color/SecondaryTextColor"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginHorizontal="15dp"/>
+
+
+            </LinearLayout>
 
         </LinearLayout>
 
