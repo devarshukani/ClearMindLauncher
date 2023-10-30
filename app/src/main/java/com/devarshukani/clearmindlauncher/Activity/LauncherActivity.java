@@ -7,6 +7,7 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.provider.Settings;
 
+import com.devarshukani.clearmindlauncher.Utils.HomeWatcher;
 import com.devarshukani.clearmindlauncher.R;
 import com.devarshukani.clearmindlauncher.Fragment.SwipeFragment;
 
@@ -21,6 +22,21 @@ public class LauncherActivity extends AppCompatActivity {
         if (!isMyLauncherDefault()) {
             promptSetLauncher();
         }
+
+        HomeWatcher mHomeWatcher = new HomeWatcher(this);
+        mHomeWatcher.setOnHomePressedListener(new HomeWatcher.OnHomePressedListener() {
+            @Override
+            public void onHomePressed() {
+                onBackPressed();
+            }
+            @Override
+            public void onHomeLongPressed() {
+                onBackPressed();
+            }
+        });
+        mHomeWatcher.startWatch();
+
+
     }
 
     private boolean isMyLauncherDefault() {
@@ -45,7 +61,6 @@ public class LauncherActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
-
 
 
 
