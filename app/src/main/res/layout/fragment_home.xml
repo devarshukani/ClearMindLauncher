@@ -7,39 +7,17 @@
     android:orientation="vertical"
     android:background="@color/PrimaryBackgroundColor">
 
-    <LinearLayout
+
+    <FrameLayout
+        android:id="@+id/clockContainer"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:layout_marginTop="40dp"
-        android:gravity="center_vertical">
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="60dp">
+        <!-- This container will hold the clock face -->
+    </FrameLayout>
 
-        <TextView
-            android:id="@+id/time"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/PrimaryTextColor"
-            android:text="12:45"
-            android:gravity="center"
-            android:textSize="80sp"
-            android:fontFamily="@font/sf_pro_display_regular"
-            android:textStyle="bold"
-            android:layout_gravity="center"/>
 
-        <TextView
-            android:id="@+id/date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/PrimaryTextColor"
-            android:text="Wednesday, 14 December"
-            android:gravity="center"
-            android:textSize="22sp"
-            android:fontFamily="@font/sf_pro_display_regular"
-            android:textStyle="normal"
-            android:layout_gravity="center"/>
-
-    </LinearLayout>
 
 
 
