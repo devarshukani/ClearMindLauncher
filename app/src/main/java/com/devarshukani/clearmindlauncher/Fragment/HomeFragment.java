@@ -1,14 +1,10 @@
 package com.devarshukani.clearmindlauncher.Fragment;
 
-import static com.devarshukani.clearmindlauncher.Helper.SharedPreferencesHelper.getData;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -20,24 +16,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.AlarmClock;
-import android.provider.CalendarContract;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.devarshukani.clearmindlauncher.Adapter.AppListAdapter;
+import com.devarshukani.clearmindlauncher.Helper.SharedPreferencesHelper;
 import com.devarshukani.clearmindlauncher.R;
-
-import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
@@ -59,10 +49,29 @@ public class HomeFragment extends Fragment implements GestureDetector.OnGestureL
 
         gestureDetector = new GestureDetector(getContext(), this);
 
+        setClock(view);
+
+
+
+
+        // favourite apps section code
+        List<AppDrawerFragment.AppListItem> selectedApps = retrieveSelectedAppsFromSharedPreferences();
+
+        favouriteAppsRecyclerView = view.findViewById(R.id.favourite_apps_recycler_view);
+        AppAdapter adapter = new AppAdapter(selectedApps);
+        favouriteAppsRecyclerView.setAdapter(adapter);
+        favouriteAppsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+
+
+        return view;
+    }
+
+    private void setClock(View view){
         FrameLayout clockContainer = view.findViewById(R.id.clockContainer);
         clockContainer.removeAllViews();
 
-        int displayClock = (int) getData(getContext(),"SelectedClockFaceNumber", 1);
+        int displayClock = (int) SharedPreferencesHelper.getData(getContext(),"SelectedClockFaceNumber", 1);
 
 
         int layoutResId = getClockLayout(displayClock);
@@ -77,19 +86,6 @@ public class HomeFragment extends Fragment implements GestureDetector.OnGestureL
                 setClock_1(view);
                 break;
         }
-
-
-        // favourite apps section code
-        List<AppDrawerFragment.AppListItem> selectedApps = retrieveSelectedAppsFromSharedPreferences();
-
-        favouriteAppsRecyclerView = view.findViewById(R.id.favourite_apps_recycler_view);
-        AppAdapter adapter = new AppAdapter(selectedApps);
-        favouriteAppsRecyclerView.setAdapter(adapter);
-        favouriteAppsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-
-
-        return view;
     }
 
     private int getClockLayout(int selectedClockFace) {
@@ -263,7 +259,11 @@ public class HomeFragment extends Fragment implements GestureDetector.OnGestureL
         if (adapter != null) {
             adapter.updateData(selectedApps);
         }
+
+        setClock(getView());
     }
+
+
 
     private List<AppDrawerFragment.AppListItem> retrieveSelectedAppsFromSharedPreferences() {
         SharedPreferences sharedPreferences = getSharedPreferences( getContext());
