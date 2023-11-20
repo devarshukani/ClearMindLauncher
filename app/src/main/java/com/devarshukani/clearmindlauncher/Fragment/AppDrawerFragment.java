@@ -103,6 +103,15 @@ public class AppDrawerFragment extends Fragment{
 //        setupSearchBar();
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        if (recyclerView != null) {
+            recyclerView.scrollToPosition(0);
+        }
+    }
+
     private BroadcastReceiver appInstallReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -191,6 +200,7 @@ public class AppDrawerFragment extends Fragment{
     }
 
     private void launchApp(AppDrawerFragment.AppListItem app) {
+
         Intent launchIntent = manager.getLaunchIntentForPackage(app.label.toString());
         if (launchIntent != null) {
             InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
