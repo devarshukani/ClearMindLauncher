@@ -3,40 +3,37 @@ package com.devarshukani.clearmindlauncher.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.devarshukani.clearmindlauncher.Adapter.AppListAdapter;
+import com.devarshukani.clearmindlauncher.Utils.OnCheckedChangeListener;
 import com.devarshukani.clearmindlauncher.Fragment.AppDrawerFragment;
 import com.devarshukani.clearmindlauncher.R;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class FavouriteAppsSettingsActivity extends AppCompatActivity {
+public class FavouriteAppsSettingsActivity extends AppCompatActivity implements OnCheckedChangeListener {
 
     private RecyclerView recyclerView;
     private AppListAdapter adapter;
+    private TextView textViewSelectedCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favourite_apps_settings);
 
+        textViewSelectedCount = findViewById(R.id.textViewSelectedCount);
         recyclerView = findViewById(R.id.app_list_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -44,6 +41,8 @@ public class FavouriteAppsSettingsActivity extends AppCompatActivity {
         List<AppDrawerFragment.AppListItem> selectedApps = getSelectedAppsFromSharedPreferences();
         List<AppDrawerFragment.AppListItem> appList = getAppsInAppDrawer();
         adapter = new AppListAdapter(this, appList, selectedApps);
+        adapter.setOnCheckedChangeListener(this);
+        textViewSelectedCount.setText(String.valueOf(adapter.getSelectedCount()));
         recyclerView.setAdapter(adapter);
     }
 
@@ -123,5 +122,10 @@ public class FavouriteAppsSettingsActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         saveSelectedAppsToSharedPreferences();
+    }
+
+    @Override
+    public void onItemCheckedChanged(int count) {
+        textViewSelectedCount.setText(String.valueOf(count));
     }
 }

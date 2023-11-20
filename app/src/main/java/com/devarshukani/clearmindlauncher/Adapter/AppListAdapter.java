@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.devarshukani.clearmindlauncher.Fragment.AppDrawerFragment;
 import com.devarshukani.clearmindlauncher.R;
+import com.devarshukani.clearmindlauncher.Utils.OnCheckedChangeListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,8 +24,9 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.ViewHold
     private List<AppDrawerFragment.AppListItem> appList;
     private List<Boolean> checkedStates;
     private PackageManager packageManager;
+    private OnCheckedChangeListener listener;
 
-    private static final int MAX_SELECTIONS = 5;
+    private static final int MAX_SELECTIONS = 6;
     private int selectedCount = 0;
     private List<AppDrawerFragment.AppListItem> selectedApps;
 
@@ -36,6 +38,10 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.ViewHold
         this.selectedApps = selectedApps;
         selectedCount = selectedApps.size();
         setInitialCheckboxStates();
+    }
+
+    public void setOnCheckedChangeListener(OnCheckedChangeListener listener) {
+        this.listener = listener;
     }
 
     private void setInitialCheckboxStates() {
@@ -78,6 +84,10 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.ViewHold
                 selectedCount++;
             }
 
+            if(listener!= null){
+                listener.onItemCheckedChanged(selectedCount);
+            }
+
             notifyDataSetChanged();
             // Do any additional logic here (e.g., saving the updated list of selected apps)
         });
@@ -86,6 +96,10 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.ViewHold
     @Override
     public int getItemCount() {
         return appList.size();
+    }
+
+    public int getSelectedCount(){
+        return selectedCount;
     }
 
     public List<AppDrawerFragment.AppListItem> getSelectedApps() {
