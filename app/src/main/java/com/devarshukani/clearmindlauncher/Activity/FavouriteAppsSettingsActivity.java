@@ -24,6 +24,7 @@ import org.json.JSONException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class FavouriteAppsSettingsActivity extends AppCompatActivity {
@@ -63,6 +64,13 @@ public class FavouriteAppsSettingsActivity extends AppCompatActivity {
 
             apps.add(app);
         }
+
+        Collections.sort(apps, new Comparator<AppDrawerFragment.AppListItem>() {
+            @Override
+            public int compare(AppDrawerFragment.AppListItem app1, AppDrawerFragment.AppListItem app2) {
+                return app1.name.toString().compareToIgnoreCase(app2.name.toString());
+            }
+        });
 
         return apps;
     }
