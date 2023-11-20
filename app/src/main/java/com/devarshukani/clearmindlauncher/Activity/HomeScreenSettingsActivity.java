@@ -42,6 +42,10 @@ public class HomeScreenSettingsActivity extends AppCompatActivity {
         ButtonClockFaces.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                anim.animateButtonClick(ButtonClockFaces);
+
+                Intent intent = new Intent(HomeScreenSettingsActivity.this, ClockFaceSettingsActivity.class);
+                startActivity(intent);
 
             }
         });
