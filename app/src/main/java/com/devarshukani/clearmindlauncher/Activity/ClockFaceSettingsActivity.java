@@ -6,14 +6,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.devarshukani.clearmindlauncher.Helper.AnimateLinearLayoutButton;
 import com.devarshukani.clearmindlauncher.Helper.SharedPreferencesHelper;
 import com.devarshukani.clearmindlauncher.R;
 
 public class ClockFaceSettingsActivity extends AppCompatActivity {
 
-    Button clock1button, clock2button;
+    LinearLayout clock1button, clock2button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,10 +25,14 @@ public class ClockFaceSettingsActivity extends AppCompatActivity {
         clock1button = findViewById(R.id.clock1button);
         clock2button = findViewById(R.id.clock2button);
 
+        AnimateLinearLayoutButton anim = new AnimateLinearLayoutButton();
+
         clock1button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(ClockFaceSettingsActivity.this, "Click 1", Toast.LENGTH_SHORT).show();
+                anim.animateButtonClick(clock1button);
+
+                Toast.makeText(ClockFaceSettingsActivity.this, "Classic Clock Applied", Toast.LENGTH_SHORT).show();
                 SharedPreferencesHelper.saveData(ClockFaceSettingsActivity.this,"SelectedClockFaceNumber", 1);
             }
         });
@@ -34,7 +40,9 @@ public class ClockFaceSettingsActivity extends AppCompatActivity {
         clock2button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(ClockFaceSettingsActivity.this, "Click 2", Toast.LENGTH_SHORT).show();
+                anim.animateButtonClick(clock2button);
+
+                Toast.makeText(ClockFaceSettingsActivity.this, "Vertical Classic Clock Applied", Toast.LENGTH_SHORT).show();
                 SharedPreferencesHelper.saveData(ClockFaceSettingsActivity.this,"SelectedClockFaceNumber", 2);
             }
         });
