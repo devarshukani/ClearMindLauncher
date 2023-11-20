@@ -156,7 +156,7 @@ public class HomeFragment extends Fragment implements GestureDetector.OnGestureL
 
 
         Date currentDate = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, d MMMM", Locale.getDefault());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, d MMMM", Locale.getDefault());
         String formattedDate = dateFormat.format(currentDate);
         clock_1_date.setText(formattedDate);
     }
@@ -240,7 +240,7 @@ public class HomeFragment extends Fragment implements GestureDetector.OnGestureL
 
 
         Date currentDate = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("EE, d MMM", Locale.getDefault());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, d MMMM", Locale.getDefault());
         String formattedDate = dateFormat.format(currentDate);
         clock_2_date.setText(formattedDate);
     }
