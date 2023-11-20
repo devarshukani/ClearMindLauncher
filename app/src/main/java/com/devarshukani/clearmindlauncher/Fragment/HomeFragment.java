@@ -1,5 +1,7 @@
 package com.devarshukani.clearmindlauncher.Fragment;
 
+import static com.devarshukani.clearmindlauncher.Helper.SharedPreferencesHelper.getData;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +28,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,77 +49,34 @@ import java.util.Locale;
 public class HomeFragment extends Fragment implements GestureDetector.OnGestureListener{
 
     private GestureDetector gestureDetector;
-    private TextView timeTextView, dateTextView;
-    private Handler handler;
-    private Runnable updateTimeRunnable;
 
     private RecyclerView favouriteAppsRecyclerView;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         gestureDetector = new GestureDetector(getContext(), this);
 
-        timeTextView = view.findViewById(R.id.time);
-        dateTextView = view.findViewById(R.id.date);
+        FrameLayout clockContainer = view.findViewById(R.id.clockContainer);
+        clockContainer.removeAllViews();
 
-        timeTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(AlarmClock.ACTION_SHOW_ALARMS);
-                PackageManager packageManager = view.getContext().getPackageManager();
-
-                if (intent.resolveActivity(packageManager) != null) {
-                    view.getContext().startActivity(intent);
-                } else {
-                    // Handle the case where the clock app is not available on the device
-                }
-            }
-        });
+        int displayClock = (int) getData(getContext(),"SelectedClockFaceNumber", 1);
 
 
-        dateTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_MAIN);
-                intent.addCategory(Intent.CATEGORY_APP_CALENDAR);
-                PackageManager packageManager = view.getContext().getPackageManager();
+        int layoutResId = getClockLayout(displayClock);
+        View clockFace = getLayoutInflater().inflate(layoutResId, null);
+        clockContainer.addView(clockFace);
 
-                if (intent.resolveActivity(packageManager) != null) {
-                    view.getContext().startActivity(intent);
-                } else {
-                    // Handle the case where the calendar app is not available on the device
-                }
-            }
-        });
-
-
-        setDate();
-
-        // Initialize the Handler
-        handler = new Handler(Looper.getMainLooper());
-
-        // Create a Runnable to update time periodically
-        updateTimeRunnable = new Runnable() {
-            @Override
-            public void run() {
-                // Get the current time using system time
-                long currentTimeMillis = System.currentTimeMillis();
-                SimpleDateFormat sdf = new SimpleDateFormat("hh:mm", Locale.getDefault());
-                String currentTime = sdf.format(new Date(currentTimeMillis));
-
-                // Set the formatted time to the TextView
-                timeTextView.setText(currentTime);
-
-                // Schedule the Runnable to run again after a delay (e.g., every second)
-                handler.postDelayed(this, 1000);
-            }
-        };
-
-        // Start updating the time
-        handler.post(updateTimeRunnable);
-
+        switch (displayClock){
+            case 2:
+                setClock_2(view);
+                break;
+            case 1: default:
+                setClock_1(view);
+                break;
+        }
 
 
         // favourite apps section code
@@ -132,12 +92,163 @@ public class HomeFragment extends Fragment implements GestureDetector.OnGestureL
         return view;
     }
 
-    private void setDate() {
+    private int getClockLayout(int selectedClockFace) {
+        switch (selectedClockFace) {
+            case 2:
+                return R.layout.clock_face_2;
+            case 1:
+            default:
+                return R.layout.clock_face_1;
+        }
+    }
+
+    private void setClock_1(View view){
+        TextView clock_1_time, clock_1_date;
+        clock_1_time = view.findViewById(R.id.clock_1_time);
+        clock_1_date = view.findViewById(R.id.clock_1_date);
+        clock_1_time.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AlarmClock.ACTION_SHOW_ALARMS);
+                PackageManager packageManager = view.getContext().getPackageManager();
+
+                if (intent.resolveActivity(packageManager) != null) {
+                    view.getContext().startActivity(intent);
+                } else {
+                    // Handle the case where the clock app is not available on the device
+                }
+            }
+        });
+
+        // Initialize the Handler
+        Handler handler = new Handler(Looper.getMainLooper());
+
+        // Create a Runnable to update time periodically
+        Runnable updateTimeRunnable = new Runnable() {
+            @Override
+            public void run() {
+                // Get the current time using system time
+                long currentTimeMillis = System.currentTimeMillis();
+                SimpleDateFormat sdf = new SimpleDateFormat("hh:mm", Locale.getDefault());
+                String currentTime = sdf.format(new Date(currentTimeMillis));
+
+                // Set the formatted time to the TextView
+                clock_1_time.setText(currentTime);
+
+                // Schedule the Runnable to run again after a delay (e.g., every second)
+                handler.postDelayed(this, 1000);
+            }
+        };
+
+        // Start updating the time
+        handler.post(updateTimeRunnable);
+
+        clock_1_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.addCategory(Intent.CATEGORY_APP_CALENDAR);
+                PackageManager packageManager = view.getContext().getPackageManager();
+
+                if (intent.resolveActivity(packageManager) != null) {
+                    view.getContext().startActivity(intent);
+                } else {
+                    // Handle the case where the calendar app is not available on the device
+                }
+            }
+        });
+
+
         Date currentDate = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, d MMMM", Locale.getDefault());
         String formattedDate = dateFormat.format(currentDate);
-        dateTextView.setText(formattedDate);
+        clock_1_date.setText(formattedDate);
     }
+
+    private void setClock_2(View view){
+        TextView clock_2_hour, clock_2_min, clock_2_date;
+
+        clock_2_hour = view.findViewById(R.id.clock_2_hour);
+        clock_2_min = view.findViewById(R.id.clock_2_min);
+        clock_2_date = view.findViewById(R.id.clock_2_date);
+        clock_2_hour.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AlarmClock.ACTION_SHOW_ALARMS);
+                PackageManager packageManager = view.getContext().getPackageManager();
+
+                if (intent.resolveActivity(packageManager) != null) {
+                    view.getContext().startActivity(intent);
+                } else {
+                    // Handle the case where the clock app is not available on the device
+                }
+            }
+        });
+
+        clock_2_min.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AlarmClock.ACTION_SHOW_ALARMS);
+                PackageManager packageManager = view.getContext().getPackageManager();
+
+                if (intent.resolveActivity(packageManager) != null) {
+                    view.getContext().startActivity(intent);
+                } else {
+                    // Handle the case where the clock app is not available on the device
+                }
+            }
+        });
+
+        // Initialize the Handler
+        Handler handler = new Handler(Looper.getMainLooper());
+
+        // Create a Runnable to update time periodically
+        Runnable updateTimeRunnable = new Runnable() {
+            @Override
+            public void run() {
+                // Get the current time using system time
+                long currentTimeMillis = System.currentTimeMillis();
+                SimpleDateFormat sdfHour = new SimpleDateFormat("hh", Locale.getDefault());
+                String currentHour = sdfHour.format(new Date(currentTimeMillis));
+
+                SimpleDateFormat sdfMin = new SimpleDateFormat("mm", Locale.getDefault());
+                String currentMin = sdfMin.format(new Date(currentTimeMillis));
+
+                // Set the formatted time to the TextView
+                clock_2_hour.setText(currentHour);
+                clock_2_min.setText(currentMin);
+
+                // Schedule the Runnable to run again after a delay (e.g., every second)
+                handler.postDelayed(this, 1000);
+            }
+        };
+
+        // Start updating the time
+        handler.post(updateTimeRunnable);
+
+
+        clock_2_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.addCategory(Intent.CATEGORY_APP_CALENDAR);
+                PackageManager packageManager = view.getContext().getPackageManager();
+
+                if (intent.resolveActivity(packageManager) != null) {
+                    view.getContext().startActivity(intent);
+                } else {
+                    // Handle the case where the calendar app is not available on the device
+                }
+            }
+        });
+
+
+        Date currentDate = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EE, d MMM", Locale.getDefault());
+        String formattedDate = dateFormat.format(currentDate);
+        clock_2_date.setText(formattedDate);
+    }
+
 
     @Override
     public void onResume() {
@@ -216,14 +327,6 @@ public class HomeFragment extends Fragment implements GestureDetector.OnGestureL
 
     private static SharedPreferences getSharedPreferences(Context context) {
         return context.getSharedPreferences("SelectedApps", Context.MODE_PRIVATE);
-    }
-
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        // Remove the callback to prevent memory leaks
-        handler.removeCallbacks(updateTimeRunnable);
     }
 
     @Override
