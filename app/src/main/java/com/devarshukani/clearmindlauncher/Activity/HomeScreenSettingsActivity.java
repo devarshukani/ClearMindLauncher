@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.devarshukani.clearmindlauncher.Helper.AnimateLinearLayoutButton;
 import com.devarshukani.clearmindlauncher.R;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
@@ -24,9 +25,14 @@ public class HomeScreenSettingsActivity extends AppCompatActivity {
         ButtonFavouriteApps = findViewById(R.id.ButtonFavouriteApps);
         ButtonClockFaces = findViewById(R.id.ButtonClockFaces);
 
+        AnimateLinearLayoutButton anim = new AnimateLinearLayoutButton();
+
         ButtonFavouriteApps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                anim.animateButtonClick(ButtonFavouriteApps);
+
+
                 Intent intent = new Intent(HomeScreenSettingsActivity.this, FavouriteAppsSettingsActivity.class);
                 startActivity(intent);
             }
