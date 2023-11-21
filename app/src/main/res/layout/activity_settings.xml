@@ -22,6 +22,56 @@
             android:textColor="@color/PrimaryTextColor"
             android:layout_marginTop="30dp"/>
 
+
+        <LinearLayout
+            android:id="@+id/ButtonSystemSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/search_bar_background"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_settings"
+                app:tint="@color/PrimaryTextColor"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="15dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:text="System Settings"
+                    android:fontFamily="@font/sf_pro_display_regular"
+                    android:textStyle="bold"
+                    android:textColor="@color/PrimaryTextColor"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginHorizontal="15dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:text="Network, Devices, Sounds &amp; Vibrations"
+                    android:fontFamily="@font/sf_pro_display_regular"
+                    android:textColor="@color/SecondaryTextColor"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginHorizontal="15dp"/>
+
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+
+
         <LinearLayout
             android:id="@+id/ButtonCustomization"
             android:layout_width="match_parent"
@@ -34,7 +84,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_customization"
-                app:tint="@color/SecondaryTextColor"
+                app:tint="@color/PrimaryTextColor"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="15dp"/>
 
@@ -50,19 +100,29 @@
                     android:text="Customization"
                     android:fontFamily="@font/sf_pro_display_regular"
                     android:textStyle="bold"
-                    android:textColor="@color/SecondaryTextColor"
+                    android:textColor="@color/PrimaryTextColor"
                     android:layout_marginTop="12dp"
-                    android:layout_marginHorizontal="13dp"/>
+                    android:layout_marginHorizontal="15dp"/>
+
+<!--                <TextView-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:textSize="15sp"-->
+<!--                    android:text="Themes, Color, Background"-->
+<!--                    android:fontFamily="@font/sf_pro_display_regular"-->
+<!--                    android:textColor="@color/SecondaryTextColor"-->
+<!--                    android:layout_marginBottom="15dp"-->
+<!--                    android:layout_marginHorizontal="15dp"/>-->
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="15sp"
-                    android:text="Themes, Color, Background"
+                    android:text="[ Coming Soon ]"
                     android:fontFamily="@font/sf_pro_display_regular"
                     android:textColor="@color/SecondaryTextColor"
                     android:layout_marginBottom="15dp"
-                    android:layout_marginHorizontal="13dp"/>
+                    android:layout_marginHorizontal="15dp"/>
                 
             </LinearLayout>
 
@@ -176,7 +236,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_permissions"
-                app:tint="@color/SecondaryTextColor"
+                app:tint="@color/PrimaryTextColor"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="15dp"/>
 
@@ -192,9 +252,9 @@
                     android:text="Permissions"
                     android:fontFamily="@font/sf_pro_display_regular"
                     android:textStyle="bold"
-                    android:textColor="@color/SecondaryTextColor"
+                    android:textColor="@color/PrimaryTextColor"
                     android:layout_marginTop="12dp"
-                    android:layout_marginHorizontal="12dp"/>
+                    android:layout_marginHorizontal="15dp"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -204,7 +264,7 @@
                     android:fontFamily="@font/sf_pro_display_regular"
                     android:textColor="@color/SecondaryTextColor"
                     android:layout_marginBottom="15dp"
-                    android:layout_marginHorizontal="12dp"/>
+                    android:layout_marginHorizontal="15dp"/>
 
             </LinearLayout>
 
@@ -223,7 +283,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_about"
-                app:tint="@color/SecondaryTextColor"
+                app:tint="@color/PrimaryTextColor"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="15dp"/>
 
@@ -239,7 +299,7 @@
                     android:text="About"
                     android:fontFamily="@font/sf_pro_display_regular"
                     android:textStyle="bold"
-                    android:textColor="@color/SecondaryTextColor"
+                    android:textColor="@color/PrimaryTextColor"
                     android:layout_marginTop="12dp"
                     android:layout_marginHorizontal="15dp"/>
 

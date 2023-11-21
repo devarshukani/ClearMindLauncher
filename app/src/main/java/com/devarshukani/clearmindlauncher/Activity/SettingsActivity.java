@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
@@ -16,6 +17,7 @@ import com.devarshukani.clearmindlauncher.R;
 
 public class SettingsActivity extends AppCompatActivity {
 
+    LinearLayout ButtonSystemSettings;
     LinearLayout ButtonCustomization;
     LinearLayout ButtonHomePage;
     LinearLayout ButtonAppDrawer;
@@ -28,13 +30,27 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
+        ButtonSystemSettings = findViewById(R.id.ButtonSystemSettings);
         ButtonCustomization = findViewById(R.id.ButtonCustomization);
         ButtonHomePage = findViewById(R.id.ButtonHomePage);
         ButtonAppDrawer = findViewById(R.id.ButtonAppDrawer);
         ButtonPermissions = findViewById(R.id.ButtonPermissions);
-        ButtonAbout = findViewById(R.id.ButtonPermissions);
+        ButtonAbout = findViewById(R.id.ButtonAbout);
 
         AnimateLinearLayoutButton anim = new AnimateLinearLayoutButton();
+
+
+        ButtonSystemSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                anim.animateButtonClick(ButtonSystemSettings);
+
+                Intent intent = new Intent(Settings.ACTION_SETTINGS);
+                startActivity(intent);
+
+            }
+        });
+
 
         ButtonHomePage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,6 +69,28 @@ public class SettingsActivity extends AppCompatActivity {
                 anim.animateButtonClick(ButtonAppDrawer);
 
                 Intent intent = new Intent(SettingsActivity.this, AppDrawerSettingsActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
+        ButtonPermissions.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                anim.animateButtonClick(ButtonPermissions);
+
+                Intent intent = new Intent(SettingsActivity.this, PermissionsSettingsActivity.class);
+                startActivity(intent);
+
+            }
+        });
+
+        ButtonAbout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                anim.animateButtonClick(ButtonAbout);
+
+                Intent intent = new Intent(SettingsActivity.this, AboutSettingsActivity.class);
                 startActivity(intent);
             }
         });
