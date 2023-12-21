@@ -319,6 +319,19 @@
         </LinearLayout>
 
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:text="Crafted with ♥ in India"
+            android:fontFamily="@font/sf_pro_display_regular"
+            android:textStyle="bold"
+            android:textColor="@color/SecondaryTextColor"
+            android:layout_marginTop="20dp"
+            android:layout_marginHorizontal="15dp"
+            android:textAlignment="center"/>
+
+
 
 
     </LinearLayout>
