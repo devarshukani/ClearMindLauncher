@@ -34,6 +34,48 @@
             android:layout_gravity="bottom"
             android:overScrollMode="never"/>
 
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ButtonDefaultLauncherHomePage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/search_bar_background"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        android:layout_margin="20dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:text="Set Default Launcher"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:textStyle="bold"
+                android:textColor="@color/PrimaryTextColor"
+                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="15dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:text="Change default Home App"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:textColor="@color/SecondaryTextColor"
+                android:layout_marginBottom="15dp"
+                android:layout_marginHorizontal="15dp"/>
+
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </LinearLayout>

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.AlarmClock;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -23,6 +25,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +44,7 @@ public class HomeFragment extends Fragment implements GestureDetector.OnGestureL
     private GestureDetector gestureDetector;
 
     private RecyclerView favouriteAppsRecyclerView;
+    LinearLayout ButtonDefaultLauncherHomePage;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -62,6 +66,17 @@ public class HomeFragment extends Fragment implements GestureDetector.OnGestureL
         favouriteAppsRecyclerView.setAdapter(adapter);
         favouriteAppsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
+
+        ButtonDefaultLauncherHomePage = view.findViewById(R.id.ButtonDefaultLauncherHomePage);
+
+
+        ButtonDefaultLauncherHomePage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Settings.ACTION_HOME_SETTINGS);
+                startActivity(intent);
+            }
+        });
 
 
         return view;
@@ -246,10 +261,27 @@ public class HomeFragment extends Fragment implements GestureDetector.OnGestureL
     }
 
 
+    private boolean isLauncherDefault() {
+        String myPackageName = getActivity().getPackageName();
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        PackageManager pm = getActivity().getPackageManager();
+        ResolveInfo resolveInfo = pm.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        String currentHomePackage = resolveInfo.activityInfo.packageName;
+        return myPackageName.equals(currentHomePackage);
+    }
+
     @Override
     public void onResume() {
         super.onResume();
 
+
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
 
         // Retrieve the updated list of selected apps from SharedPreferences
         List<AppDrawerFragment.AppListItem> selectedApps = retrieveSelectedAppsFromSharedPreferences();
@@ -261,7 +293,19 @@ public class HomeFragment extends Fragment implements GestureDetector.OnGestureL
         }
 
         setClock(getView());
+
+        if (!isLauncherDefault()) {
+            ButtonDefaultLauncherHomePage.setVisibility(View.VISIBLE);
+        }
+        else{
+            ButtonDefaultLauncherHomePage.setVisibility(View.GONE);
+        }
+
+
     }
+
+
+
 
 
 
