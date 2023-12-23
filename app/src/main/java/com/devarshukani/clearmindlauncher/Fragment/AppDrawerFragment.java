@@ -26,10 +26,12 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.devarshukani.clearmindlauncher.Activity.SettingsActivity;
 import com.devarshukani.clearmindlauncher.R;
 import com.devarshukani.clearmindlauncher.Helper.SharedPreferencesHelper;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -215,21 +217,21 @@ public class AppDrawerFragment extends Fragment{
 
     private void showCustomDialog(AppDrawerFragment.AppListItem app) {
         // Inflate the custom dialog layout
-        View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_app_info, null);
+        View bottomSheetView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_app_info, null);
 
-        ImageView imageViewAppIcon = dialogView.findViewById(R.id.imageViewAppIcon);
-        TextView textViewAppName = dialogView.findViewById(R.id.textViewAppName);
-        TextView buttonAppInfo = dialogView.findViewById(R.id.buttonAppInfo);
+        ImageView imageViewAppIcon = bottomSheetView.findViewById(R.id.imageViewAppIcon);
+        TextView textViewAppName = bottomSheetView.findViewById(R.id.textViewAppName);
+        ImageButton buttonAppInfo = bottomSheetView.findViewById(R.id.buttonAppInfo);
+        ImageButton buttonUninstall = bottomSheetView.findViewById(R.id.buttonUninstall);
 
         // Set app information in the dialog views
         imageViewAppIcon.setImageDrawable((Drawable) app.icon);
         textViewAppName.setText(app.name);
 
-        // Build and show the custom dialog with the custom style
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.AppTheme_Dialog);
-        dialogBuilder.setView(dialogView);
+        // Create a BottomSheetDialog instance
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
+        bottomSheetDialog.setContentView(bottomSheetView);
 
-        AlertDialog dialog = dialogBuilder.create();
 
         // Set the click listener for the "App Info" button
         buttonAppInfo.setOnClickListener(new View.OnClickListener() {
@@ -239,12 +241,25 @@ public class AppDrawerFragment extends Fragment{
                 intent.setData(Uri.parse("package:" + app.label.toString()));
                 startActivity(intent);
 
-                dialog.dismiss(); // Dismiss the dialog after opening app settings
+                bottomSheetDialog.dismiss(); // Dismiss the dialog after opening app settings
             }
         });
 
-        dialog.show();
+        buttonUninstall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create an intent to uninstall the app
+                Intent intent = new Intent(Intent.ACTION_DELETE);
+                intent.setData(Uri.parse("package:" + app.label.toString()));
+                startActivity(intent);
+
+                bottomSheetDialog.dismiss(); // Dismiss the dialog after initiating uninstallation
+            }
+        });
+
+        bottomSheetDialog.show();
     }
+
 
 
 
