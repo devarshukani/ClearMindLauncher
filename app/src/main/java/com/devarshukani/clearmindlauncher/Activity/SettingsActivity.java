@@ -20,11 +20,14 @@ public class SettingsActivity extends AppCompatActivity {
 
     LinearLayout ButtonSystemSettings;
     LinearLayout ButtonDefaultLauncher;
+
     LinearLayout ButtonHomePage;
     LinearLayout ButtonAppDrawer;
-    LinearLayout ButtonPermissions;
-    LinearLayout ButtonAbout;
+    LinearLayout ButtonPausedApps;
 
+    LinearLayout ButtonPermissions;
+
+    LinearLayout ButtonAbout;
     LinearLayout ButtonReportBug;
     LinearLayout ButtonFeedback;
 
@@ -39,6 +42,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         ButtonHomePage = findViewById(R.id.ButtonHomePage);
         ButtonAppDrawer = findViewById(R.id.ButtonAppDrawer);
+        ButtonPausedApps = findViewById(R.id.ButtonPausedApps);
 
         ButtonPermissions = findViewById(R.id.ButtonPermissions);
 
@@ -87,6 +91,16 @@ public class SettingsActivity extends AppCompatActivity {
                 anim.animateButtonClick(ButtonAppDrawer);
 
                 Intent intent = new Intent(SettingsActivity.this, AppDrawerSettingsActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        ButtonPausedApps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                anim.animateButtonClick(ButtonPausedApps);
+
+                Intent intent = new Intent(SettingsActivity.this, AppPauseControlsSettingsActivity.class);
                 startActivity(intent);
             }
         });
