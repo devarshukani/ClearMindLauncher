@@ -10,10 +10,9 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
+    <uses-permission
+        android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
-
-
 
     <application
         android:allowBackup="true"
@@ -25,6 +24,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ClearMindLauncher"
         tools:targetApi="31">
+        <activity
+            android:name=".Activity.AppPauseControlsSettingsActivity"
+            android:exported="false" />
         <activity
             android:name=".Activity.Onboarding3Activity"
             android:exported="false" />
