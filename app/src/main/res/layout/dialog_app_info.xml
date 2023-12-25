@@ -79,6 +79,16 @@
             android:textColor="@color/PrimaryTextColor"
             android:textSize="18sp"/>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/sf_pro_display_regular"
+            android:text="Note: Once paused, you won't be able to open this popup or unpause"
+            android:textColor="@color/SecondaryTextColor"
+            android:textSize="12sp"
+            android:textStyle="italic"/>
+
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/buttonPauseFor1Hour"
