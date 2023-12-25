@@ -44,6 +44,17 @@ public class FavouriteAppsSettingsActivity extends AppCompatActivity implements 
         adapter.setOnCheckedChangeListener(this);
         textViewSelectedCount.setText(String.valueOf(adapter.getSelectedCount()));
         recyclerView.setAdapter(adapter);
+
+        saveSelectedAppsToSharedPreferences();
+
+        // Retrieve selected apps from SharedPreferences
+        selectedApps = getSelectedAppsFromSharedPreferences();
+        appList = getAppsInAppDrawer();
+        adapter = new AppListAdapter(this, appList, selectedApps);
+        adapter.setOnCheckedChangeListener(this);
+        textViewSelectedCount.setText(String.valueOf(adapter.getSelectedCount()));
+        recyclerView.setAdapter(adapter);
+
     }
 
     private List<AppDrawerFragment.AppListItem> getAppsInAppDrawer() {
