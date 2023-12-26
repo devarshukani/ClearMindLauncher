@@ -51,7 +51,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="15sp"
-                    android:text="Grant brief access to paused app"
+                    android:text="Grant 5 min access to paused app"
                     android:fontFamily="@font/sf_pro_display_regular"
                     android:textColor="@color/SecondaryTextColor"
                     android:layout_marginBottom="15dp"
@@ -60,7 +60,7 @@
             </LinearLayout>
 
             <com.google.android.material.materialswitch.MaterialSwitch
-                android:id="@+id/switchAlwaysShowKeyboard"
+                android:id="@+id/switchTemporaryAccess"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
