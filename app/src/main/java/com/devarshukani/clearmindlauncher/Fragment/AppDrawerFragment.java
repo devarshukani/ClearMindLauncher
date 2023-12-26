@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,6 +20,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.provider.CalendarContract;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -37,6 +40,7 @@ import com.devarshukani.clearmindlauncher.Database.RoomDB;
 import com.devarshukani.clearmindlauncher.R;
 import com.devarshukani.clearmindlauncher.Helper.SharedPreferencesHelper;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -220,7 +224,7 @@ public class AppDrawerFragment extends Fragment{
         }
     }
 
-    private void launchApp(AppDrawerFragment.AppListItem app) {
+    private void launchApp(AppListItem app) {
 
         Intent launchIntent = manager.getLaunchIntentForPackage(app.label.toString());
         if (launchIntent != null) {
@@ -228,7 +232,55 @@ public class AppDrawerFragment extends Fragment{
 
             if (isPaused) {
                 // Show a toast indicating that the app is paused
-                Toast.makeText(getContext(), app.name + " is paused", Toast.LENGTH_SHORT).show();
+                boolean temporaryAccess = (boolean) SharedPreferencesHelper.getData(getContext(), "AppPauseControlsTemporaryAccess", false);
+                if(!temporaryAccess){
+                    Toast.makeText(getContext(), app.name + " is paused", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    View bottomSheetView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_temporary_pause_app, null);
+
+                    BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
+                    bottomSheetDialog.setContentView(bottomSheetView);
+
+                    Button buttonDismiss = bottomSheetView.findViewById(R.id.buttonDismiss);
+                    TextView buttonUnpauseFor5Min = bottomSheetView.findViewById(R.id.buttonUnpauseFor5Min);
+
+                    buttonDismiss.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            bottomSheetDialog.dismiss();
+                        }
+                    });
+
+                    buttonUnpauseFor5Min.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            PausedApps newPausedApps = new PausedApps();
+
+                            long currentDateTime = System.currentTimeMillis();
+                            long currentDateTimePlusFive = currentDateTime + (5 * 60 * 1000);
+
+                            PausedApps pausedAppsData = database.mainDAO().getSingleApp(app.label.toString());
+
+
+                            newPausedApps.setPackageName(app.label.toString());
+                            newPausedApps.setPausedStartTime(String.valueOf(currentDateTimePlusFive));
+                            newPausedApps.setPausedEndTime(pausedAppsData.getPausedEndTime());
+                            database.mainDAO().insert(newPausedApps);
+
+
+                            Toast.makeText(getContext(), app.name + " paused for an additional 5 minutes", Toast.LENGTH_SHORT).show();
+
+                            // Dismiss the dialog after updating the pause duration
+                            bottomSheetDialog.dismiss();
+                            onResume();
+                        }
+                    });
+
+                    bottomSheetDialog.show();
+
+                }
+
             } else {
                 InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 inputMethodManager.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
