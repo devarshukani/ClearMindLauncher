@@ -24,6 +24,10 @@ public class SwipeFragment extends Fragment {
         viewPager.setAdapter(new MyPagerAdapter(this)); // Pass 'this' which refers to the parent Fragment
         viewPager.setPageTransformer(new CustomPageTransformer());
 
+        // first time render glitch fix
+        switchToAppDrawerFragment();
+        switchToHomeFragment();
+
         return view;
     }
 
@@ -51,6 +55,10 @@ public class SwipeFragment extends Fragment {
 
     public void switchToHomeFragment() {
         viewPager.setCurrentItem(0);
+    }
+
+    public void switchToAppDrawerFragment(){
+        viewPager.setCurrentItem(1);
     }
 
 }
