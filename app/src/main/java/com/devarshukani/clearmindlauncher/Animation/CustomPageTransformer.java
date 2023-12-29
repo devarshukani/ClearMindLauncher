@@ -6,7 +6,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 public class CustomPageTransformer implements ViewPager2.PageTransformer {
     private static final float MIN_SCALE = 0.9999f;
-    private static final float MIN_ALPHA = 0.8f;
+    private static final float MIN_ALPHA = 1f;
     private static final int ANIMATION_DURATION = 1200; // Adjust the duration as needed for slower animation
 
     @Override

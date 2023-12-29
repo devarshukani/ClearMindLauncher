@@ -14,27 +14,45 @@ import com.devarshukani.clearmindlauncher.R;
 
 public class PermissionsSettingsActivity extends AppCompatActivity {
 
-    LinearLayout ButtonDefaultLauncher;
     LinearLayout ButtonPrivacyPolicy;
+    LinearLayout buttonDisplayOverOtherApps;
+    LinearLayout buttonUsageAccess;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_permissions_settings);
 
-        ButtonDefaultLauncher = findViewById(R.id.ButtonDefaultLauncher);
+        buttonDisplayOverOtherApps = findViewById(R.id.buttonDisplayOverOtherApps);
+        buttonUsageAccess = findViewById(R.id.buttonUsageAccess);
+
         ButtonPrivacyPolicy = findViewById(R.id.ButtonPrivacyPolicy);
 
         AnimateLinearLayoutButton anim = new AnimateLinearLayoutButton();
 
-        ButtonDefaultLauncher.setOnClickListener(new View.OnClickListener() {
+
+        buttonDisplayOverOtherApps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                anim.animateButtonClick(ButtonDefaultLauncher);
-                Intent intent = new Intent(Settings.ACTION_HOME_SETTINGS);
+                // Open the screen to grant 'Display Over Other Apps' permission
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:" + getPackageName()));
                 startActivity(intent);
             }
         });
+
+
+
+        buttonUsageAccess.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Open the screen to grant 'Usage Access' permission
+                Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+                startActivity(intent);
+            }
+        });
+
+
 
         ButtonPrivacyPolicy.setOnClickListener(new View.OnClickListener() {
             @Override

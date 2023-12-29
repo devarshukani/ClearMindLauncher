@@ -6,10 +6,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,10 +27,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.devarshukani.clearmindlauncher.Database.PausedApps;
+import com.devarshukani.clearmindlauncher.Database.RoomDB;
 import com.devarshukani.clearmindlauncher.Helper.SharedPreferencesHelper;
 import com.devarshukani.clearmindlauncher.R;
 
@@ -46,10 +51,16 @@ public class HomeFragment extends Fragment implements GestureDetector.OnGestureL
     private RecyclerView favouriteAppsRecyclerView;
     LinearLayout ButtonDefaultLauncherHomePage;
 
+    List<PausedApps> pausedAppsList;
+    RoomDB database;
+
     @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+
+        database = RoomDB.getInstance(getContext());
+        pausedAppsList = database.mainDAO().getAll();
 
         gestureDetector = new GestureDetector(getContext(), this);
 
@@ -275,7 +286,16 @@ public class HomeFragment extends Fragment implements GestureDetector.OnGestureL
     public void onResume() {
         super.onResume();
 
+        database = RoomDB.getInstance(getContext());
+        pausedAppsList = database.mainDAO().getAll();
 
+        List<AppDrawerFragment.AppListItem> selectedApps = retrieveSelectedAppsFromSharedPreferences();
+
+        // Update the data in the adapter and notify it of the data change
+        AppAdapter adapter = (AppAdapter) favouriteAppsRecyclerView.getAdapter();
+        if (adapter != null) {
+            adapter.updateData(selectedApps);
+        }
 
     }
 
@@ -449,10 +469,32 @@ public class HomeFragment extends Fragment implements GestureDetector.OnGestureL
         PackageManager manager = getContext().getPackageManager();
         Intent launchIntent = manager.getLaunchIntentForPackage(app.label.toString());
         if (launchIntent != null) {
-            startActivity(launchIntent);
+
+            boolean isPaused = isAppPaused(app);
+            if (isPaused) {
+                // Show a toast indicating that the app is paused
+                Toast.makeText(getContext(), app.name + " is paused", Toast.LENGTH_SHORT).show();
+            }
+            else{
+                startActivity(launchIntent);
+            }
         }
 
 
+    }
+
+    private boolean isAppPaused(AppDrawerFragment.AppListItem app) {
+        long currentTimeMillis = System.currentTimeMillis();
+        for (PausedApps pausedApp : pausedAppsList) {
+            long startTimeMillis = Long.parseLong(pausedApp.getPausedStartTime());
+            long endTimeMillis = Long.parseLong(pausedApp.getPausedEndTime());
+
+            if (currentTimeMillis >= startTimeMillis && currentTimeMillis <= endTimeMillis &&
+                    app.label.toString().equals(pausedApp.getPackageName())) {
+                return true; // App is within paused time range
+            }
+        }
+        return false; // App is not paused
     }
 
     private class AppAdapter extends RecyclerView.Adapter<HomeFragment.AppAdapter.AppViewHolder> {
@@ -474,6 +516,18 @@ public class HomeFragment extends Fragment implements GestureDetector.OnGestureL
         public void onBindViewHolder(@NonNull HomeFragment.AppAdapter.AppViewHolder holder, int position) {
             AppDrawerFragment.AppListItem app = appsList.get(position);
             holder.appName.setText(app.name);
+
+            boolean isPaused = isAppPaused(app);
+
+            // Set text color based on the app's paused status
+            if (isPaused) {
+                holder.appName.setTextColor(ContextCompat.getColor(getContext(), R.color.SecondaryTextColor));
+                holder.imageViewTimer.setVisibility(View.VISIBLE);
+            }
+            else{
+                holder.appName.setTextColor(ContextCompat.getColor(getContext(), R.color.PrimaryTextColor));
+                holder.imageViewTimer.setVisibility(View.GONE);
+            }
 
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -501,10 +555,12 @@ public class HomeFragment extends Fragment implements GestureDetector.OnGestureL
         class AppViewHolder extends RecyclerView.ViewHolder {
 
             TextView appName;
+            ImageView imageViewTimer;
 
             public AppViewHolder(@NonNull View itemView) {
                 super(itemView);
                 appName = itemView.findViewById(R.id.name);
+                imageViewTimer = itemView.findViewById(R.id.imageViewTimer);
             }
         }
     }
