@@ -47,6 +47,5 @@ public class HomeScreenSettingsActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
     }
 }

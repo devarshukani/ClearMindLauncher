@@ -17,11 +17,11 @@ public class AnimateLinearLayoutButton {
         scaleAnimation.setRepeatCount(1); // Set the number of times the animation will repeat
         scaleAnimation.setRepeatMode(Animation.REVERSE); // Set the mode of animation repetition
         button.startAnimation(scaleAnimation);
-
+        
         // Add haptic feedback
         performHapticFeedback(button);
     }
-
+    
     public void animateButtonClickWithHaptics(View button) {
         if (button instanceof LinearLayout) {
             animateButtonClick((LinearLayout) button);
@@ -30,11 +30,11 @@ public class AnimateLinearLayoutButton {
             performHapticFeedback(button);
         }
     }
-
+    
     private void performHapticFeedback(View view) {
         Context context = view.getContext();
         Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-
+        
         if (vibrator != null && vibrator.hasVibrator()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 // For API 26 and above, use VibrationEffect

@@ -6,7 +6,8 @@
     android:gravity="start|top"
     android:layout_marginTop="20dp"
     android:layout_marginStart="20dp"
-    android:layout_marginEnd="20dp">
+    android:layout_marginEnd="20dp"
+    android:paddingLeft="20dp">
 
     <!-- Time Section -->
     <TextView
@@ -16,8 +17,8 @@
         android:text="12:34"
         android:textSize="48sp"
         android:textColor="@color/PrimaryTextColor"
-        android:fontFamily="@font/sf_pro_display_regular"
-        android:layout_marginEnd="24dp" />
+        android:fontFamily="@font/sf_pro_display_bold"
+        android:layout_marginEnd="14dp" />
 
     <!-- Date Section -->
     <LinearLayout
@@ -35,7 +36,7 @@
             android:textSize="16sp"
             android:textColor="@color/PrimaryTextColor"
             android:fontFamily="@font/sf_pro_display_regular"
-            android:layout_marginBottom="2dp" />
+            android:layout_marginTop="7dp" />
 
         <TextView
             android:id="@+id/clock_3_date"

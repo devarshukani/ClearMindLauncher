@@ -145,7 +145,7 @@
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:src="@drawable/clock_preview_1"
+                        android:src="@drawable/clock_preview_3"
                         android:scaleType="centerCrop" />
                 </androidx.cardview.widget.CardView>
 
