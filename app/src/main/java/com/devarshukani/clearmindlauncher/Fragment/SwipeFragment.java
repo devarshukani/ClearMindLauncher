@@ -8,20 +8,20 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
-import androidx.viewpager2.widget.ViewPager2;
 
 import com.devarshukani.clearmindlauncher.Animation.CustomPageTransformer;
+import com.devarshukani.clearmindlauncher.CustomViews.CustomViewPager2;
 import com.devarshukani.clearmindlauncher.R;
 
 public class SwipeFragment extends Fragment {
-    private ViewPager2 viewPager;
+    private CustomViewPager2 viewPager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_swipe, container, false);
         viewPager = view.findViewById(R.id.viewPager);
 
-        viewPager.setAdapter(new MyPagerAdapter(this)); // Pass 'this' which refers to the parent Fragment
+        viewPager.setAdapter(new MyPagerAdapter(this));
         viewPager.setPageTransformer(new CustomPageTransformer());
 
         // first time render glitch fix
@@ -46,7 +46,6 @@ public class SwipeFragment extends Fragment {
             }
         }
 
-
         @Override
         public int getItemCount() {
             return 2;
@@ -60,5 +59,4 @@ public class SwipeFragment extends Fragment {
     public void switchToAppDrawerFragment(){
         viewPager.setCurrentItem(1);
     }
-
 }
