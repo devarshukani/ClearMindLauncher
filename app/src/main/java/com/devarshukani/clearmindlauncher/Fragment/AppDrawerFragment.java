@@ -39,6 +39,7 @@ import com.devarshukani.clearmindlauncher.Database.PausedApps;
 import com.devarshukani.clearmindlauncher.Database.RoomDB;
 import com.devarshukani.clearmindlauncher.R;
 import com.devarshukani.clearmindlauncher.Helper.SharedPreferencesHelper;
+import com.devarshukani.clearmindlauncher.Helper.AnimateLinearLayoutButton;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -61,6 +62,7 @@ public class AppDrawerFragment extends Fragment{
 
     List<PausedApps> pausedAppsList;
     RoomDB database;
+    private AnimateLinearLayoutButton animHelper; // Add helper for haptics
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -68,6 +70,7 @@ public class AppDrawerFragment extends Fragment{
 
         database = RoomDB.getInstance(getContext());
         pausedAppsList = database.mainDAO().getAll();
+        animHelper = new AnimateLinearLayoutButton(); // Initialize haptics helper
 
         searchEditText = view.findViewById(R.id.ETHomeSearchField);
         btnSettings = view.findViewById(R.id.btnSettings);
@@ -80,9 +83,20 @@ public class AppDrawerFragment extends Fragment{
 //        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 //        imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT);
 
+        // Add haptic feedback to search bar when focused
+        searchEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    animHelper.animateButtonClickWithHaptics(searchEditText);
+                }
+            }
+        });
+
         btnSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                animHelper.animateButtonClickWithHaptics(btnSettings); // Add haptic feedback
                 Intent intent = new Intent(getContext(), SettingsActivity.class);
                 startActivity(intent);
             }

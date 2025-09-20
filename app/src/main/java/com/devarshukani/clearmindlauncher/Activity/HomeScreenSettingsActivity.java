@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.devarshukani.clearmindlauncher.Helper.AnimateLinearLayoutButton;
 import com.devarshukani.clearmindlauncher.R;
@@ -17,36 +16,35 @@ public class HomeScreenSettingsActivity extends AppCompatActivity {
     LinearLayout ButtonFavouriteApps;
     LinearLayout ButtonClockFaces;
 
+    private AnimateLinearLayoutButton animHelper; // Add haptics helper
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen_settings);
 
+        animHelper = new AnimateLinearLayoutButton(); // Initialize haptics helper
+
         ButtonFavouriteApps = findViewById(R.id.ButtonFavouriteApps);
         ButtonClockFaces = findViewById(R.id.ButtonClockFaces);
-
-        AnimateLinearLayoutButton anim = new AnimateLinearLayoutButton();
 
         ButtonFavouriteApps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                anim.animateButtonClick(ButtonFavouriteApps);
-
+                animHelper.animateButtonClick(ButtonFavouriteApps); // Add haptic feedback
 
                 Intent intent = new Intent(HomeScreenSettingsActivity.this, FavouriteAppsSettingsActivity.class);
                 startActivity(intent);
             }
         });
 
-
         ButtonClockFaces.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                anim.animateButtonClick(ButtonClockFaces);
+                animHelper.animateButtonClick(ButtonClockFaces); // Add haptic feedback
 
                 Intent intent = new Intent(HomeScreenSettingsActivity.this, ClockFaceSettingsActivity.class);
                 startActivity(intent);
-
             }
         });
 

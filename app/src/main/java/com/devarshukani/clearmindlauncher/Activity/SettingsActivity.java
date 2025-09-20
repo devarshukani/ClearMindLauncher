@@ -31,11 +31,14 @@ public class SettingsActivity extends AppCompatActivity {
     LinearLayout ButtonReportBug;
     LinearLayout ButtonFeedback;
 
+    private AnimateLinearLayoutButton animHelper; // Add haptics helper
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        animHelper = new AnimateLinearLayoutButton(); // Initialize haptics helper
 
         ButtonSystemSettings = findViewById(R.id.ButtonSystemSettings);
         ButtonDefaultLauncher = findViewById(R.id.ButtonDefaultLauncher);
@@ -50,45 +53,39 @@ public class SettingsActivity extends AppCompatActivity {
         ButtonReportBug = findViewById(R.id.ButtonReportBug);
         ButtonFeedback = findViewById(R.id.ButtonFeedback);
 
-        AnimateLinearLayoutButton anim = new AnimateLinearLayoutButton();
-
-
         ButtonSystemSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                anim.animateButtonClick(ButtonSystemSettings);
+                animHelper.animateButtonClick(ButtonSystemSettings); // Add haptic feedback
 
                 Intent intent = new Intent(Settings.ACTION_SETTINGS);
                 startActivity(intent);
-
             }
         });
 
         ButtonDefaultLauncher.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                anim.animateButtonClick(ButtonDefaultLauncher);
+                animHelper.animateButtonClick(ButtonDefaultLauncher); // Add haptic feedback
                 Intent intent = new Intent(Settings.ACTION_HOME_SETTINGS);
                 startActivity(intent);
             }
         });
 
-
         ButtonHomePage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                anim.animateButtonClick(ButtonHomePage);
+                animHelper.animateButtonClick(ButtonHomePage); // Add haptic feedback
 
                 Intent intent = new Intent(SettingsActivity.this, HomeScreenSettingsActivity.class);
                 startActivity(intent);
-
             }
         });
 
         ButtonAppDrawer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                anim.animateButtonClick(ButtonAppDrawer);
+                animHelper.animateButtonClick(ButtonAppDrawer); // Add haptic feedback
 
                 Intent intent = new Intent(SettingsActivity.this, AppDrawerSettingsActivity.class);
                 startActivity(intent);
@@ -98,22 +95,20 @@ public class SettingsActivity extends AppCompatActivity {
         ButtonPausedApps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                anim.animateButtonClick(ButtonPausedApps);
+                animHelper.animateButtonClick(ButtonPausedApps); // Add haptic feedback
 
                 Intent intent = new Intent(SettingsActivity.this, AppPauseControlsSettingsActivity.class);
                 startActivity(intent);
             }
         });
 
-
         ButtonPermissions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                anim.animateButtonClick(ButtonPermissions);
+                animHelper.animateButtonClick(ButtonPermissions); // Add haptic feedback
 
                 Intent intent = new Intent(SettingsActivity.this, PermissionsSettingsActivity.class);
                 startActivity(intent);
-
             }
         });
 
@@ -122,7 +117,7 @@ public class SettingsActivity extends AppCompatActivity {
         ButtonAbout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                anim.animateButtonClick(ButtonAbout);
+                animHelper.animateButtonClick(ButtonAbout); // Add haptic feedback
 
                 Intent intent = new Intent(SettingsActivity.this, AboutSettingsActivity.class);
                 startActivity(intent);
@@ -132,7 +127,7 @@ public class SettingsActivity extends AppCompatActivity {
         ButtonFeedback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                anim.animateButtonClick(ButtonFeedback);
+                animHelper.animateButtonClick(ButtonFeedback); // Add haptic feedback
 
                 String appPackageName = getPackageName();
 
@@ -144,11 +139,10 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-
         ButtonReportBug.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                anim.animateButtonClick(ButtonReportBug);
+                animHelper.animateButtonClick(ButtonReportBug); // Add haptic feedback
 
                 String email = "devarsh@indi.technology";
                 String subject = "Bug Report - ClearMind Launcher";
@@ -166,7 +160,6 @@ public class SettingsActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
     }
 
 }

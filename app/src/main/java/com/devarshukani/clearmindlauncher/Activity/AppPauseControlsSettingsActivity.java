@@ -9,17 +9,21 @@ import android.widget.LinearLayout;
 import android.widget.Switch;
 
 import com.devarshukani.clearmindlauncher.Helper.SharedPreferencesHelper;
+import com.devarshukani.clearmindlauncher.Helper.AnimateLinearLayoutButton;
 import com.devarshukani.clearmindlauncher.R;
 import com.google.android.material.materialswitch.MaterialSwitch;
 
 public class AppPauseControlsSettingsActivity extends AppCompatActivity {
 
     MaterialSwitch switchTemporaryAccess;
+    private AnimateLinearLayoutButton animHelper; // Add haptics helper
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_pause_controls_settings);
+
+        animHelper = new AnimateLinearLayoutButton(); // Initialize haptics helper
 
         switchTemporaryAccess = findViewById(R.id.switchTemporaryAccess);
 
@@ -30,6 +34,7 @@ public class AppPauseControlsSettingsActivity extends AppCompatActivity {
         switchTemporaryAccess.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                animHelper.animateButtonClickWithHaptics(compoundButton); // Add haptic feedback
                 SharedPreferencesHelper.saveData(AppPauseControlsSettingsActivity.this, "AppPauseControlsTemporaryAccess", isChecked);
             }
         });

@@ -35,6 +35,7 @@ import android.widget.Toast;
 import com.devarshukani.clearmindlauncher.Database.PausedApps;
 import com.devarshukani.clearmindlauncher.Database.RoomDB;
 import com.devarshukani.clearmindlauncher.Helper.SharedPreferencesHelper;
+import com.devarshukani.clearmindlauncher.Helper.AnimateLinearLayoutButton;
 import com.devarshukani.clearmindlauncher.R;
 
 import java.lang.reflect.Method;
@@ -53,6 +54,7 @@ public class HomeFragment extends Fragment implements GestureDetector.OnGestureL
 
     List<PausedApps> pausedAppsList;
     RoomDB database;
+    private AnimateLinearLayoutButton animHelper; // Add haptics helper
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -61,13 +63,11 @@ public class HomeFragment extends Fragment implements GestureDetector.OnGestureL
 
         database = RoomDB.getInstance(getContext());
         pausedAppsList = database.mainDAO().getAll();
+        animHelper = new AnimateLinearLayoutButton(); // Initialize haptics helper
 
         gestureDetector = new GestureDetector(getContext(), this);
 
         setClock(view);
-
-
-
 
         // favourite apps section code
         List<AppDrawerFragment.AppListItem> selectedApps = retrieveSelectedAppsFromSharedPreferences();
@@ -77,18 +77,16 @@ public class HomeFragment extends Fragment implements GestureDetector.OnGestureL
         favouriteAppsRecyclerView.setAdapter(adapter);
         favouriteAppsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-
         ButtonDefaultLauncherHomePage = view.findViewById(R.id.ButtonDefaultLauncherHomePage);
-
 
         ButtonDefaultLauncherHomePage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                animHelper.animateButtonClick(ButtonDefaultLauncherHomePage); // Add haptic feedback
                 Intent intent = new Intent(Settings.ACTION_HOME_SETTINGS);
                 startActivity(intent);
             }
         });
-
 
         return view;
     }
@@ -131,6 +129,7 @@ public class HomeFragment extends Fragment implements GestureDetector.OnGestureL
         clock_1_time.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                animHelper.animateButtonClickWithHaptics(view); // Add haptic feedback
                 Intent intent = new Intent(AlarmClock.ACTION_SHOW_ALARMS);
                 PackageManager packageManager = view.getContext().getPackageManager();
 
@@ -168,6 +167,7 @@ public class HomeFragment extends Fragment implements GestureDetector.OnGestureL
         clock_1_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                animHelper.animateButtonClickWithHaptics(view); // Add haptic feedback
                 Intent intent = new Intent(Intent.ACTION_MAIN);
                 intent.addCategory(Intent.CATEGORY_APP_CALENDAR);
                 PackageManager packageManager = view.getContext().getPackageManager();
@@ -179,7 +179,6 @@ public class HomeFragment extends Fragment implements GestureDetector.OnGestureL
                 }
             }
         });
-
 
         Date currentDate = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, d MMMM", Locale.getDefault());
@@ -196,6 +195,7 @@ public class HomeFragment extends Fragment implements GestureDetector.OnGestureL
         clock_2_hour.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                animHelper.animateButtonClickWithHaptics(view); // Add haptic feedback
                 Intent intent = new Intent(AlarmClock.ACTION_SHOW_ALARMS);
                 PackageManager packageManager = view.getContext().getPackageManager();
 
@@ -210,6 +210,7 @@ public class HomeFragment extends Fragment implements GestureDetector.OnGestureL
         clock_2_min.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                animHelper.animateButtonClickWithHaptics(view); // Add haptic feedback
                 Intent intent = new Intent(AlarmClock.ACTION_SHOW_ALARMS);
                 PackageManager packageManager = view.getContext().getPackageManager();
 
@@ -252,6 +253,7 @@ public class HomeFragment extends Fragment implements GestureDetector.OnGestureL
         clock_2_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                animHelper.animateButtonClickWithHaptics(view); // Add haptic feedback
                 Intent intent = new Intent(Intent.ACTION_MAIN);
                 intent.addCategory(Intent.CATEGORY_APP_CALENDAR);
                 PackageManager packageManager = view.getContext().getPackageManager();
