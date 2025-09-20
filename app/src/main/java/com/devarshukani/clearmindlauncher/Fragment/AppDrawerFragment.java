@@ -162,11 +162,15 @@ public class AppDrawerFragment extends Fragment{
 
         List<ResolveInfo> availableActivities = manager.queryIntentActivities(i, PackageManager.GET_ACTIVITIES);
 
+        // Get the current setting for showing app icons
+        boolean showAppIcons = (boolean) SharedPreferencesHelper.getData(getContext(), "AppDrawerShowAppIcons", false);
+
         for (ResolveInfo ri : availableActivities) {
             AppDrawerFragment.AppListItem app = new AppDrawerFragment.AppListItem();
             app.label = ri.activityInfo.packageName;
             app.name = ri.loadLabel(manager);
             app.icon = ri.loadIcon(manager);
+            app.showIcon = showAppIcons; // Initialize showIcon field
 
             apps.add(app);
         }
@@ -213,7 +217,12 @@ public class AppDrawerFragment extends Fragment{
             }
         }
 
+        // Get the current setting for showing app icons
+        boolean showAppIcons = (boolean) SharedPreferencesHelper.getData(getContext(), "AppDrawerShowAppIcons", false);
+
         AppDrawerFragment.AppAdapter adapter = new AppDrawerFragment.AppAdapter(filteredApps, pausedAppsList);
+        // Update icon visibility for the new adapter
+        adapter.updateAppIconVisibility(showAppIcons);
         recyclerView.setAdapter(adapter);
 
         if (filteredApps.size() == 1) {
