@@ -69,6 +69,11 @@ public class AppDrawerFragment extends Fragment{
     private long lastToastTime = 0;
     private static final long TOAST_COOLDOWN = 2000; // 2 seconds cooldown
 
+    // Add variables to prevent dialog spam
+    private String lastDialogAppPackage = "";
+    private long lastDialogTime = 0;
+    private static final long DIALOG_COOLDOWN = 3000; // 3 seconds cooldown for dialogs
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_app_drawer, container, false);
@@ -265,48 +270,7 @@ public class AppDrawerFragment extends Fragment{
                     showToastWithCooldown(app.name + " is paused"); // Use cooldown method
                 }
                 else{
-                    View bottomSheetView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_temporary_pause_app, null);
-
-                    BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
-                    bottomSheetDialog.setContentView(bottomSheetView);
-
-                    Button buttonDismiss = bottomSheetView.findViewById(R.id.buttonDismiss);
-                    TextView buttonUnpauseFor5Min = bottomSheetView.findViewById(R.id.buttonUnpauseFor5Min);
-
-                    buttonDismiss.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            bottomSheetDialog.dismiss();
-                        }
-                    });
-
-                    buttonUnpauseFor5Min.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            PausedApps newPausedApps = new PausedApps();
-
-                            long currentDateTime = System.currentTimeMillis();
-                            long currentDateTimePlusFive = currentDateTime + (5 * 60 * 1000);
-
-                            PausedApps pausedAppsData = database.mainDAO().getSingleApp(app.label.toString());
-
-
-                            newPausedApps.setPackageName(app.label.toString());
-                            newPausedApps.setPausedStartTime(String.valueOf(currentDateTimePlusFive));
-                            newPausedApps.setPausedEndTime(pausedAppsData.getPausedEndTime());
-                            database.mainDAO().insert(newPausedApps);
-
-
-                            Toast.makeText(getContext(), app.name + " paused for an additional 5 minutes", Toast.LENGTH_SHORT).show();
-
-                            // Dismiss the dialog after updating the pause duration
-                            bottomSheetDialog.dismiss();
-                            onResume();
-                        }
-                    });
-
-                    bottomSheetDialog.show();
-
+                    showTemporaryAccessDialogWithCooldown(app);
                 }
 
             } else {
@@ -345,6 +309,59 @@ public class AppDrawerFragment extends Fragment{
         }
     }
 
+    // Helper method to show temporary access dialog with spam prevention
+    private void showTemporaryAccessDialogWithCooldown(AppListItem app) {
+        long currentTime = System.currentTimeMillis();
+
+        // Check if enough time has passed since the last dialog for this app
+        if (app.label.toString().equals(lastDialogAppPackage) && (currentTime - lastDialogTime) < DIALOG_COOLDOWN) {
+            return; // Don't show the dialog again yet
+        }
+
+        lastDialogAppPackage = app.label.toString();
+        lastDialogTime = currentTime;
+
+        View bottomSheetView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_temporary_pause_app, null);
+
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
+        bottomSheetDialog.setContentView(bottomSheetView);
+
+        Button buttonDismiss = bottomSheetView.findViewById(R.id.buttonDismiss);
+        TextView buttonUnpauseFor5Min = bottomSheetView.findViewById(R.id.buttonUnpauseFor5Min);
+
+        buttonDismiss.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheetDialog.dismiss();
+            }
+        });
+
+        buttonUnpauseFor5Min.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PausedApps newPausedApps = new PausedApps();
+
+                long currentDateTime = System.currentTimeMillis();
+                long currentDateTimePlusFive = currentDateTime + (5 * 60 * 1000);
+
+                PausedApps pausedAppsData = database.mainDAO().getSingleApp(app.label.toString());
+
+                newPausedApps.setPackageName(app.label.toString());
+                newPausedApps.setPausedStartTime(String.valueOf(currentDateTimePlusFive));
+                newPausedApps.setPausedEndTime(pausedAppsData.getPausedEndTime());
+                database.mainDAO().insert(newPausedApps);
+
+                Toast.makeText(getContext(), app.name + " paused for an additional 5 minutes", Toast.LENGTH_SHORT).show();
+
+                // Dismiss the dialog after updating the pause duration
+                bottomSheetDialog.dismiss();
+                onResume();
+            }
+        });
+
+        bottomSheetDialog.show();
+    }
+
     private void showCustomDialog(AppDrawerFragment.AppListItem app) {
         // Inflate the custom dialog layout
         boolean isPaused = isAppPaused(app);
@@ -354,6 +371,14 @@ public class AppDrawerFragment extends Fragment{
             showToastWithCooldown(app.name + " is paused"); // Use cooldown method
             return;
         }
+
+        // Prevent dialog spam
+        long currentTime = System.currentTimeMillis();
+        if (app.label.toString().equals(lastDialogAppPackage) && (currentTime - lastDialogTime) < DIALOG_COOLDOWN) {
+            return; // Don't show the dialog again yet
+        }
+        lastDialogAppPackage = app.label.toString();
+        lastDialogTime = currentTime;
 
         View bottomSheetView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_app_info, null);
 
