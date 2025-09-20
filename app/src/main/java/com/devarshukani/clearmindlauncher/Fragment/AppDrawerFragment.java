@@ -64,6 +64,11 @@ public class AppDrawerFragment extends Fragment{
     RoomDB database;
     private AnimateLinearLayoutButton animHelper; // Add helper for haptics
 
+    // Add variables to prevent toast spam
+    private String lastToastMessage = "";
+    private long lastToastTime = 0;
+    private static final long TOAST_COOLDOWN = 2000; // 2 seconds cooldown
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_app_drawer, container, false);
@@ -257,7 +262,7 @@ public class AppDrawerFragment extends Fragment{
                 // Show a toast indicating that the app is paused
                 boolean temporaryAccess = (boolean) SharedPreferencesHelper.getData(getContext(), "AppPauseControlsTemporaryAccess", false);
                 if(!temporaryAccess){
-                    Toast.makeText(getContext(), app.name + " is paused", Toast.LENGTH_SHORT).show();
+                    showToastWithCooldown(app.name + " is paused"); // Use cooldown method
                 }
                 else{
                     View bottomSheetView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_temporary_pause_app, null);
@@ -328,13 +333,25 @@ public class AppDrawerFragment extends Fragment{
         return false; // App is not paused
     }
 
+    // Helper method to show toast with spam prevention
+    private void showToastWithCooldown(String message) {
+        long currentTime = System.currentTimeMillis();
+
+        // Check if enough time has passed since the last toast or if it's a different message
+        if (!message.equals(lastToastMessage) || (currentTime - lastToastTime) > TOAST_COOLDOWN) {
+            Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+            lastToastMessage = message;
+            lastToastTime = currentTime;
+        }
+    }
+
     private void showCustomDialog(AppDrawerFragment.AppListItem app) {
         // Inflate the custom dialog layout
         boolean isPaused = isAppPaused(app);
 
         if (isPaused) {
             // Show a toast indicating that the app is paused
-            Toast.makeText(getContext(), app.name + " is paused", Toast.LENGTH_SHORT).show();
+            showToastWithCooldown(app.name + " is paused"); // Use cooldown method
             return;
         }
 
