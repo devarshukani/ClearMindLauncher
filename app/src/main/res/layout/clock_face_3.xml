@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="start|top"
+    android:layout_marginTop="20dp"
+    android:layout_marginStart="20dp"
+    android:layout_marginEnd="20dp">
+
+    <!-- Time Section -->
+    <TextView
+        android:id="@+id/clock_3_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="12:34"
+        android:textSize="48sp"
+        android:textColor="@color/PrimaryTextColor"
+        android:fontFamily="@font/sf_pro_display_regular"
+        android:layout_marginEnd="24dp" />
+
+    <!-- Date Section -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="top"
+        android:layout_marginTop="4dp">
+
+        <TextView
+            android:id="@+id/clock_3_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Saturday"
+            android:textSize="16sp"
+            android:textColor="@color/PrimaryTextColor"
+            android:fontFamily="@font/sf_pro_display_regular"
+            android:layout_marginBottom="2dp" />
+
+        <TextView
+            android:id="@+id/clock_3_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sep 21"
+            android:textSize="16sp"
+            android:textColor="@color/SecondaryTextColor"
+            android:fontFamily="@font/sf_pro_display_light" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -106,6 +106,9 @@ public class HomeFragment extends Fragment implements GestureDetector.OnGestureL
             case 2:
                 setClock_2(view);
                 break;
+            case 3:
+                setClock_3(view);
+                break;
             case 1: default:
                 setClock_1(view);
                 break;
@@ -116,6 +119,8 @@ public class HomeFragment extends Fragment implements GestureDetector.OnGestureL
         switch (selectedClockFace) {
             case 2:
                 return R.layout.clock_face_2;
+            case 3:
+                return R.layout.clock_face_3;
             case 1:
             default:
                 return R.layout.clock_face_1;
@@ -271,6 +276,96 @@ public class HomeFragment extends Fragment implements GestureDetector.OnGestureL
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, d MMMM", Locale.getDefault());
         String formattedDate = dateFormat.format(currentDate);
         clock_2_date.setText(formattedDate);
+    }
+
+    private void setClock_3(View view){
+        TextView clock_3_time, clock_3_day, clock_3_date;
+
+        clock_3_time = view.findViewById(R.id.clock_3_time);
+        clock_3_day = view.findViewById(R.id.clock_3_day);
+        clock_3_date = view.findViewById(R.id.clock_3_date);
+
+        // Add click listeners with haptic feedback
+        clock_3_time.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                animHelper.animateButtonClickWithHaptics(view); // Add haptic feedback
+                Intent intent = new Intent(AlarmClock.ACTION_SHOW_ALARMS);
+                PackageManager packageManager = view.getContext().getPackageManager();
+
+                if (intent.resolveActivity(packageManager) != null) {
+                    view.getContext().startActivity(intent);
+                } else {
+                    // Handle the case where the clock app is not available on the device
+                }
+            }
+        });
+
+        clock_3_day.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                animHelper.animateButtonClickWithHaptics(view); // Add haptic feedback
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.addCategory(Intent.CATEGORY_APP_CALENDAR);
+                PackageManager packageManager = view.getContext().getPackageManager();
+
+                if (intent.resolveActivity(packageManager) != null) {
+                    view.getContext().startActivity(intent);
+                } else {
+                    // Handle the case where the calendar app is not available on the device
+                }
+            }
+        });
+
+        clock_3_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                animHelper.animateButtonClickWithHaptics(view); // Add haptic feedback
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.addCategory(Intent.CATEGORY_APP_CALENDAR);
+                PackageManager packageManager = view.getContext().getPackageManager();
+
+                if (intent.resolveActivity(packageManager) != null) {
+                    view.getContext().startActivity(intent);
+                } else {
+                    // Handle the case where the calendar app is not available on the device
+                }
+            }
+        });
+
+        // Initialize the Handler for time updates
+        Handler handler = new Handler(Looper.getMainLooper());
+
+        // Create a Runnable to update time periodically
+        Runnable updateTimeRunnable = new Runnable() {
+            @Override
+            public void run() {
+                // Get the current time using system time
+                long currentTimeMillis = System.currentTimeMillis();
+                SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm", Locale.getDefault());
+                String currentTime = timeFormat.format(new Date(currentTimeMillis));
+
+                // Set the formatted time to the TextView
+                clock_3_time.setText(currentTime);
+
+                // Schedule the Runnable to run again after a delay (e.g., every second)
+                handler.postDelayed(this, 1000);
+            }
+        };
+
+        // Start updating the time
+        handler.post(updateTimeRunnable);
+
+        // Set the date and day
+        Date currentDate = new Date();
+        SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.getDefault());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd", Locale.getDefault());
+
+        String formattedDay = dayFormat.format(currentDate);
+        String formattedDate = dateFormat.format(currentDate);
+
+        clock_3_day.setText(formattedDay);
+        clock_3_date.setText(formattedDate);
     }
 
 
