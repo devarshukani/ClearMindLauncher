@@ -23,45 +23,46 @@
             android:layout_marginTop="30dp"/>
 
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:text="About App"
-            android:fontFamily="@font/sf_pro_display_regular"
-            android:textStyle="bold"
-            android:textColor="@color/PrimaryTextColor"
-            android:layout_marginTop="25dp"/>
+<!--        <TextView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:textSize="18sp"-->
+<!--            android:text="About App"-->
+<!--            android:fontFamily="@font/sf_pro_display_regular"-->
+<!--            android:textStyle="bold"-->
+<!--            android:textColor="@color/PrimaryTextColor"-->
+<!--            android:layout_marginTop="25dp"/>-->
 
         <TextView
+            android:layout_marginTop="25dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="15sp"
-            android:text="ClearMind Launcher is a lightweight and customizable Android launcher designed to provide a clutter-free and focused home screen experience. It aims to help users declutter their digital lives and focus on what matters most."
+            android:text="ClearMind Launcher is a lightweight, customizable Android launcher designed to create a clean and focused home screen experience. Our goal is to help you cut through digital clutter, reduce distractions, and stay focused on what truly matters."
             android:fontFamily="@font/sf_pro_display_regular"
             android:textColor="@color/SecondaryTextColor"
             android:layout_marginBottom="15dp"
             android:justificationMode="inter_word"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:text="About Developer"
-            android:fontFamily="@font/sf_pro_display_regular"
-            android:textStyle="bold"
-            android:textColor="@color/PrimaryTextColor"
-            android:layout_marginTop="0dp"/>
+<!--        <TextView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:textSize="18sp"-->
+<!--            android:text="About Developer"-->
+<!--            android:fontFamily="@font/sf_pro_display_regular"-->
+<!--            android:textStyle="bold"-->
+<!--            android:textColor="@color/PrimaryTextColor"-->
+<!--            android:layout_marginTop="0dp"/>-->
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:text="ClearMind Launcher, an ingenious creation by an individual developer based in India, reflects a commitment to reshaping user experiences"
-            android:fontFamily="@font/sf_pro_display_regular"
-            android:textColor="@color/SecondaryTextColor"
-            android:layout_marginBottom="10dp"
-            android:justificationMode="inter_word"/>
+<!--        <TextView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:textSize="15sp"-->
+<!--            android:text="ClearMind Launcher, an ingenious creation by an individual developer based in India, reflects a commitment to reshaping user experiences"-->
+<!--            android:fontFamily="@font/sf_pro_display_regular"-->
+<!--            android:textColor="@color/SecondaryTextColor"-->
+<!--            android:layout_marginBottom="10dp"-->
+<!--            android:justificationMode="inter_word"/>-->
 
 
     </LinearLayout>

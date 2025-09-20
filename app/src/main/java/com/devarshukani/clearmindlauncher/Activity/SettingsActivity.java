@@ -150,7 +150,7 @@ public class SettingsActivity extends AppCompatActivity {
             public void onClick(View view) {
                 anim.animateButtonClick(ButtonReportBug);
 
-                String email = "connect.dreamwave@gmail.com";
+                String email = "devarsh@indi.technology";
                 String subject = "Bug Report - ClearMind Launcher";
                 String body = "Dear ClearMind Support Team,\n\nI encountered the following issue:\n[Describe the bug in detail here, attach screenshots if possible]\n\nSteps to reproduce the bug:\n1. \n2. \n3. \n\nDevice Information:\n- Device: [Your Device Model]\n- OS Version: [Your Android Version]\n\nYour prompt attention to this matter would be greatly appreciated.\n\nSincerely,\n[Your Name]";
 
