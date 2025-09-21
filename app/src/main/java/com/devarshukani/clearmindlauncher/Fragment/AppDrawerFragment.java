@@ -315,7 +315,8 @@ public class AppDrawerFragment extends Fragment{
                         isScrolling = false;
                         // Immediately show all apps but keep scroll position
                         showAllAppsAtCurrentPosition();
-                        hideLetterIndicatorWithDelay();
+                         // Start fading the center indicator instantly on release
+                        hideLetterIndicatorImmediately();
                         // Re-enable click events on individual letters
                         for (TextView letterView : letterViews) {
                             letterView.setClickable(true);
@@ -352,7 +353,8 @@ public class AppDrawerFragment extends Fragment{
                         isScrolling = false;
                         // Immediately show all apps but keep scroll position
                         showAllAppsAtCurrentPosition();
-                        hideLetterIndicatorWithDelay();
+                        // Start fading the center indicator instantly on release
+                        hideLetterIndicatorImmediately();
                         // Re-enable click events on individual letters
                         for (TextView letterView : letterViews) {
                             letterView.setClickable(true);
@@ -390,7 +392,8 @@ public class AppDrawerFragment extends Fragment{
                         isScrolling = false;
                         // Immediately show all apps but keep scroll position
                         showAllAppsAtCurrentPosition();
-                        hideLetterIndicatorWithDelay();
+                        // Start fading the center indicator instantly on release
+                        hideLetterIndicatorImmediately();
                         // Re-enable click events on individual letters
                         for (TextView letterView : letterViews) {
                             letterView.setClickable(true);
@@ -428,7 +431,8 @@ public class AppDrawerFragment extends Fragment{
                         isScrolling = false;
                         // Immediately show all apps but keep scroll position
                         showAllAppsAtCurrentPosition();
-                        hideLetterIndicatorWithDelay();
+                        // Start fading the center indicator instantly on release
+                        hideLetterIndicatorImmediately();
                         // Re-enable click events on individual letters
                         for (TextView letterView : letterViews) {
                             letterView.setClickable(true);
@@ -481,6 +485,33 @@ public class AppDrawerFragment extends Fragment{
                 });
             }
         }, 1000); // Reduced delay to 1 second just for indicator hiding
+    }
+
+    // Hide the selected-letter indicator immediately (used on drag release)
+    private void hideLetterIndicatorImmediately() {
+        // Cancel any pending delayed hides
+        hideIndicatorHandler.removeCallbacksAndMessages(null);
+
+        if (selectedLetterIndicator == null) return;
+
+        // If already invisible or fully transparent, ensure it's hidden
+        if (selectedLetterIndicator.getVisibility() != View.VISIBLE || selectedLetterIndicator.getAlpha() == 0f) {
+            selectedLetterIndicator.setVisibility(View.GONE);
+            currentSelectedLetter = "";
+            return;
+        }
+
+        // Fade out immediately and hide on end
+        ObjectAnimator fadeOut = ObjectAnimator.ofFloat(selectedLetterIndicator, "alpha", selectedLetterIndicator.getAlpha(), 0f);
+        fadeOut.setDuration(200); // shorter immediate fade for snappier feel
+        fadeOut.start();
+        fadeOut.addListener(new android.animation.AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(android.animation.Animator animation) {
+                selectedLetterIndicator.setVisibility(View.GONE);
+                currentSelectedLetter = "";
+            }
+        });
     }
 
     private void setupSearchBar() {
