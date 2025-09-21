@@ -196,7 +196,13 @@ public class AppDrawerFragment extends Fragment{
         // Get the current setting for showing app icons
         boolean showAppIcons = (boolean) SharedPreferencesHelper.getData(getContext(), "AppDrawerShowAppIcons", false);
 
+        String myPackage = getContext().getPackageName();
         for (ResolveInfo ri : availableActivities) {
+            // Skip the launcher app itself
+            if (ri.activityInfo.packageName != null && ri.activityInfo.packageName.equals(myPackage)) {
+                continue;
+            }
+
             AppDrawerFragment.AppListItem app = new AppDrawerFragment.AppListItem();
             app.label = ri.activityInfo.packageName;
             app.name = ri.loadLabel(manager);

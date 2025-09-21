@@ -105,7 +105,13 @@ public class FavouriteAppsSettingsActivity extends AppCompatActivity implements 
 
         List<ResolveInfo> availableActivities = packageManager.queryIntentActivities(intent, PackageManager.GET_ACTIVITIES);
 
+        String myPackage = getPackageName();
         for (ResolveInfo ri : availableActivities) {
+            // Skip the launcher app itself
+            if (ri.activityInfo.packageName != null && ri.activityInfo.packageName.equals(myPackage)) {
+                continue;
+            }
+
             AppDrawerFragment.AppListItem app = new AppDrawerFragment.AppListItem();
             app.label = ri.activityInfo.packageName;
             app.name = ri.loadLabel(packageManager);
@@ -149,14 +155,23 @@ public class FavouriteAppsSettingsActivity extends AppCompatActivity implements 
         Log.d("Debug", "SelectedAppsString: " + selectedAppsString);
         List<AppDrawerFragment.AppListItem> selectedApps = new ArrayList<>();
 
+        String myPackage = getPackageName();
         if (selectedAppsString != null && !selectedAppsString.isEmpty()) {
             String[] appStrings = selectedAppsString.split(",");
             for (String appString : appStrings) {
                 String[] appData = appString.split("\\|");
                 if (appData.length == 2) {
+                    String savedName = appData[0];
+                    String savedLabel = appData[1];
+
+                    // Skip if the saved entry is this launcher
+                    if (savedLabel != null && savedLabel.equals(myPackage)) {
+                        continue;
+                    }
+
                     AppDrawerFragment.AppListItem app = new AppDrawerFragment.AppListItem();
-                    app.name = appData[0];
-                    app.label = appData[1];
+                    app.name = savedName;
+                    app.label = savedLabel;
                     selectedApps.add(app);
                 }
             }
