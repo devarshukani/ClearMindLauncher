@@ -60,8 +60,17 @@ import java.util.Locale;
 import android.view.MotionEvent;
 import java.util.HashMap;
 import java.util.Map;
+import android.view.HapticFeedbackConstants;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+import android.util.Log;
+import android.provider.Settings;
 
 public class AppDrawerFragment extends Fragment{
+
+    private static final String TAG = "AppDrawerFragment";
+    // Debug flag key to force vibrator fallback for testing
+    private static final String PREF_FORCE_VIBRATOR = "AppDrawerForceVibrator";
 
     private PackageManager manager;
     private List<AppDrawerFragment.AppListItem> apps;
@@ -94,6 +103,9 @@ public class AppDrawerFragment extends Fragment{
     private boolean isScrolling = false;
     private Handler hideIndicatorHandler = new Handler(Looper.getMainLooper());
     private Map<String, Integer> letterPositions = new HashMap<>();
+    // Haptics throttle: ensure we don't fire vibrations too rapidly while dragging
+    private long lastHapticTime = 0L;
+    private static final long HAPTIC_COOLDOWN_MS = 40L; // min 40ms between haptics
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -1057,22 +1069,104 @@ public class AppDrawerFragment extends Fragment{
 
     private void applyLetterSelection(String letter) {
         if (letter == null) return;
-        currentSelectedLetter = letter;
+        // Only trigger haptic feedback when letter actually changes (and respect a small cooldown)
+        String previous = currentSelectedLetter;
         int index = letter.charAt(0) - 'A';
+        if (!letter.equals(previous)) {
+            long now = System.currentTimeMillis();
+            if ((now - lastHapticTime) >= HAPTIC_COOLDOWN_MS) {
+                // Prefer to haptically target the visible indicator; fall back to the letter view or scroll bar
+                View hapticTarget = selectedLetterIndicator != null ? selectedLetterIndicator : (letterViews != null && index >= 0 && index < letterViews.length ? letterViews[index] : alphabetScrollBar);
+                try {
+                    triggerHaptic(hapticTarget);
+                } catch (Exception ignored) {
+                    // If anything goes wrong, don't crash during drag
+                }
+                lastHapticTime = now;
+            }
+            currentSelectedLetter = letter;
+        }
+
         highlightLetter(index);
         showSelectedLetterIndicator(letter);
 
-        // Update adapter to visually emphasize matching apps while dragging
-        AppAdapter adapter = new AppAdapter(apps, pausedAppsList, letter);
-        // Preserve icon visibility preference
-        boolean showAppIcons = (boolean) SharedPreferencesHelper.getData(getContext(), "AppDrawerShowAppIcons", false);
-        adapter.updateAppIconVisibility(showAppIcons);
-        recyclerView.setAdapter(adapter);
-
-        // Scroll to the first app starting with the selected letter
+        // During active drag, avoid heavy work (like recreating adapters) which can block haptics.
+        // Only scroll the list to the best matching position for the letter.
         int position = findClosestPositionForLetter(letter);
         if (position >= 0) {
             recyclerView.scrollToPosition(position);
+        }
+    }
+
+    // Try view-based haptics first, then fall back to direct vibrator vibration
+    private void triggerHaptic(View target) {
+        boolean performed = false;
+        Log.d(TAG, "triggerHaptic called for target=" + (target != null ? target.getClass().getSimpleName() : "null") + " currentSelectedLetter=" + currentSelectedLetter);
+        boolean forceVibrator = false;
+        try {
+            Boolean val = (Boolean) SharedPreferencesHelper.getData(getContext(), PREF_FORCE_VIBRATOR, false);
+            forceVibrator = val != null && val;
+        } catch (Exception e) {
+            // ignore
+        }
+
+        // If system haptic feedback is disabled, prefer vibrator fallback
+        boolean systemHapticsEnabled = true;
+        try {
+            Context ctx = getContext();
+            if (ctx != null) {
+                systemHapticsEnabled = Settings.System.getInt(ctx.getContentResolver(), Settings.System.HAPTIC_FEEDBACK_ENABLED, 1) == 1;
+            }
+        } catch (Exception e) {
+            // ignore and assume enabled
+            systemHapticsEnabled = true;
+        }
+
+        if (!forceVibrator && systemHapticsEnabled && target != null) {
+            try {
+                target.setHapticFeedbackEnabled(true);
+                performed = target.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
+            } catch (Throwable t) {
+                performed = false;
+            }
+            if (!performed) {
+                try {
+                    performed = target.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+                } catch (Throwable t) {
+                    performed = false;
+                }
+            }
+        } else {
+            Log.d(TAG, "Skipping view-based haptics: forceVibrator=" + forceVibrator + " systemHapticsEnabled=" + systemHapticsEnabled);
+        }
+
+        Log.d(TAG, "view-performed=" + performed + " forceVibrator=" + forceVibrator + " systemHapticsEnabled=" + systemHapticsEnabled);
+
+        if (!performed || forceVibrator || !systemHapticsEnabled) {
+            // Fallback to vibrator directly (animHelper also does this, but call here directly for reliability)
+            Context ctx = getContext();
+            if (ctx == null) return;
+            Vibrator vibrator = (Vibrator) ctx.getSystemService(Context.VIBRATOR_SERVICE);
+            if (vibrator != null && vibrator.hasVibrator()) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    try {
+                        vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_TICK));
+                        Log.d(TAG, "vibrator: EFFECT_TICK called");
+                    } catch (Exception e) {
+                        // Some devices may not support predefined; try one-shot
+                        vibrator.vibrate(VibrationEffect.createOneShot(10, VibrationEffect.DEFAULT_AMPLITUDE));
+                        Log.d(TAG, "vibrator: one-shot fallback called");
+                    }
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    vibrator.vibrate(VibrationEffect.createOneShot(10, VibrationEffect.DEFAULT_AMPLITUDE));
+                    Log.d(TAG, "vibrator: O one-shot called");
+                } else {
+                    vibrator.vibrate(10);
+                    Log.d(TAG, "vibrator: legacy vibrate 10ms called");
+                }
+            } else {
+                Log.d(TAG, "No vibrator available");
+            }
         }
     }
 
