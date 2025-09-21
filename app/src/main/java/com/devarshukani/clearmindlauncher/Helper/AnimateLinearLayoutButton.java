@@ -36,12 +36,15 @@ public class AnimateLinearLayoutButton {
         Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         
         if (vibrator != null && vibrator.hasVibrator()) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                // For API 26 and above, use VibrationEffect
-                vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                // For API 29 and above, use the lightest predefined effect
+                vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_TICK));
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                // For API 26-28, use very light amplitude (1 is the minimum) with short duration
+                vibrator.vibrate(VibrationEffect.createOneShot(20, 1));
             } else {
-                // For older versions
-                vibrator.vibrate(50);
+                // For older versions, use very short duration
+                vibrator.vibrate(20);
             }
         }
     }
