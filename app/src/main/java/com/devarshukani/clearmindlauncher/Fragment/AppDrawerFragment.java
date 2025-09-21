@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -144,7 +145,13 @@ public class AppDrawerFragment extends Fragment{
         filter.addAction(Intent.ACTION_PACKAGE_ADDED);
         filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
         filter.addDataScheme("package");
-        getContext().registerReceiver(appInstallReceiver, filter);
+
+        // Fix BroadcastReceiver registration for Android 13+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            getContext().registerReceiver(appInstallReceiver, filter, Context.RECEIVER_EXPORTED);
+        } else {
+            getContext().registerReceiver(appInstallReceiver, filter);
+        }
 
         loadApps();
         setupRecyclerView(getView());

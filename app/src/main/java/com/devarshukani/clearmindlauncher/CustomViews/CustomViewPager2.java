@@ -68,6 +68,11 @@ public class CustomViewPager2 extends FrameLayout {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+        // Only allow swipe-down gesture on HomeFragment (position 0)
+        if (viewPager.getCurrentItem() != 0) {
+            return super.onInterceptTouchEvent(ev);
+        }
+
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 startY = ev.getY();

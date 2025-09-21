@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.util.Log;
 
 public class HomeWatcher {
@@ -26,7 +27,14 @@ public class HomeWatcher {
 
     public void startWatch() {
         if (mReceiver != null) {
-            mContext.registerReceiver(mReceiver, mFilter);
+            // Use the appropriate receiver registration based on Android version
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                // For Android 13+ (API 33+), use RECEIVER_NOT_EXPORTED since this is for internal app use
+                mContext.registerReceiver(mReceiver, mFilter, Context.RECEIVER_NOT_EXPORTED);
+            } else {
+                // For older Android versions, use the legacy method
+                mContext.registerReceiver(mReceiver, mFilter);
+            }
         }
     }
 
@@ -66,4 +74,3 @@ public class HomeWatcher {
         void onHomeLongPressed();
     }
 }
-
