@@ -1,5 +1,7 @@
 package com.devarshukani.clearmindlauncher.Fragment;
 
+import android.animation.ObjectAnimator;
+import android.animation.AnimatorSet;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -14,6 +16,8 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -32,6 +36,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,6 +57,9 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import android.view.MotionEvent;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AppDrawerFragment extends Fragment{
 
@@ -75,6 +83,18 @@ public class AppDrawerFragment extends Fragment{
     private long lastDialogTime = 0;
     private static final long DIALOG_COOLDOWN = 3000; // 3 seconds cooldown for dialogs
 
+    // A-Z scroll bar variables
+    private LinearLayout alphabetScrollBar;
+    private View alphabetTouchArea; // Add the expanded touch area
+    private View alphabetOverlay1; // First overlay layer
+    private View alphabetOverlay2; // Second overlay layer
+    private TextView selectedLetterIndicator;
+    private TextView[] letterViews;
+    private String currentSelectedLetter = "";
+    private boolean isScrolling = false;
+    private Handler hideIndicatorHandler = new Handler(Looper.getMainLooper());
+    private Map<String, Integer> letterPositions = new HashMap<>();
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_app_drawer, container, false);
@@ -85,11 +105,18 @@ public class AppDrawerFragment extends Fragment{
 
         searchEditText = view.findViewById(R.id.ETHomeSearchField);
         btnSettings = view.findViewById(R.id.btnSettings);
+        alphabetScrollBar = view.findViewById(R.id.alphabetScrollBar);
+        alphabetTouchArea = view.findViewById(R.id.alphabetTouchArea); // Initialize the touch area
+        alphabetOverlay1 = view.findViewById(R.id.alphabetOverlay1); // Initialize first overlay
+        alphabetOverlay2 = view.findViewById(R.id.alphabetOverlay2); // Initialize second overlay
+        selectedLetterIndicator = view.findViewById(R.id.selectedLetterIndicator);
+
         loadApps();
         setupRecyclerView(view);
         setupSearchBar();
+        setupAlphabetScrollBar();
 
-//         Request focus and show the keyboard for the search bar
+        //         Request focus and show the keyboard for the search bar
 //        searchEditText.requestFocus();
 //        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 //        imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT);
@@ -123,6 +150,10 @@ public class AppDrawerFragment extends Fragment{
 
         database = RoomDB.getInstance(getContext());
         pausedAppsList = database.mainDAO().getAll();
+
+        // Clear any existing filter state when fragment resumes
+        currentSelectedLetter = "";
+        resetLetterHighlight();
 
         boolean alwaysShowKeyboard = (boolean) SharedPreferencesHelper.getData(getContext(), "AppDrawerAlwaysShowKeyboard", false);
 
@@ -222,11 +253,223 @@ public class AppDrawerFragment extends Fragment{
 
     private void setupRecyclerView(View view) {
         recyclerView = view.findViewById(R.id.recyclerView);
-        AppAdapter adapter = new AppAdapter(apps, pausedAppsList); // Pass pausedAppsList here
+        AppAdapter adapter = new AppAdapter(apps, pausedAppsList, ""); // Pass empty filter initially
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        calculateLetterPositions();
     }
 
+    private void setupAlphabetScrollBar() {
+        // Initialize letter views array
+        letterViews = new TextView[26];
+        String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+        for (int i = 0; i < 26; i++) {
+            String letter = String.valueOf(alphabet.charAt(i));
+            int resId = getResources().getIdentifier("letter" + letter, "id", getContext().getPackageName());
+            letterViews[i] = alphabetScrollBar.findViewById(resId);
+
+            final String finalLetter = letter;
+            letterViews[i].setOnClickListener(v -> scrollToLetter(finalLetter));
+
+            // Disable touch events on individual letters to prevent conflicts
+            letterViews[i].setClickable(true);
+            letterViews[i].setFocusable(false);
+            letterViews[i].setFocusableInTouchMode(false);
+        }
+
+        // Primary touch listener for the top overlay layer (highest priority)
+        alphabetOverlay2.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        isScrolling = true;
+                        handleOverlayTouch(event);
+                        // Disable click events on individual letters during drag
+                        for (TextView letterView : letterViews) {
+                            letterView.setClickable(false);
+                        }
+                        return true;
+
+                    case MotionEvent.ACTION_MOVE:
+                        if (isScrolling) {
+                            handleOverlayTouch(event);
+                        }
+                        return true;
+
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL:
+                        isScrolling = false;
+                        // Immediately show all apps but keep scroll position
+                        showAllAppsAtCurrentPosition();
+                        hideLetterIndicatorWithDelay();
+                        // Re-enable click events on individual letters
+                        for (TextView letterView : letterViews) {
+                            letterView.setClickable(true);
+                        }
+                        v.performClick();
+                        return true;
+                }
+                return false;
+            }
+        });
+
+        // Secondary touch listener for the first overlay layer
+        alphabetOverlay1.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        isScrolling = true;
+                        handleOverlayTouch(event);
+                        // Disable click events on individual letters during drag
+                        for (TextView letterView : letterViews) {
+                            letterView.setClickable(false);
+                        }
+                        return true;
+
+                    case MotionEvent.ACTION_MOVE:
+                        if (isScrolling) {
+                            handleOverlayTouch(event);
+                        }
+                        return true;
+
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL:
+                        isScrolling = false;
+                        // Immediately show all apps but keep scroll position
+                        showAllAppsAtCurrentPosition();
+                        hideLetterIndicatorWithDelay();
+                        // Re-enable click events on individual letters
+                        for (TextView letterView : letterViews) {
+                            letterView.setClickable(true);
+                        }
+                        v.performClick();
+                        return true;
+                }
+                return false;
+            }
+        });
+
+        // Use the expanded touch area for all touch events (fallback)
+        alphabetTouchArea.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        isScrolling = true;
+                        handleExpandedAlphabetTouch(event);
+                        // Disable click events on individual letters during drag
+                        for (TextView letterView : letterViews) {
+                            letterView.setClickable(false);
+                        }
+                        return true;
+
+                    case MotionEvent.ACTION_MOVE:
+                        // Handle drag functionality
+                        if (isScrolling) {
+                            handleExpandedAlphabetTouch(event);
+                        }
+                        return true;
+
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL:
+                        isScrolling = false;
+                        // Immediately show all apps but keep scroll position
+                        showAllAppsAtCurrentPosition();
+                        hideLetterIndicatorWithDelay();
+                        // Re-enable click events on individual letters
+                        for (TextView letterView : letterViews) {
+                            letterView.setClickable(true);
+                        }
+                        v.performClick();
+                        return true;
+                }
+                return false;
+            }
+        });
+
+        // Also add touch listener to the LinearLayout itself to handle direct letter touches (final fallback)
+        alphabetScrollBar.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        isScrolling = true;
+                        handleDirectLetterTouch(event);
+                        // Disable click events on individual letters during drag
+                        for (TextView letterView : letterViews) {
+                            letterView.setClickable(false);
+                        }
+                        return true;
+
+                    case MotionEvent.ACTION_MOVE:
+                        // Handle drag functionality directly on letters
+                        if (isScrolling) {
+                            handleDirectLetterTouch(event);
+                        }
+                        return true;
+
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL:
+                        isScrolling = false;
+                        // Immediately show all apps but keep scroll position
+                        showAllAppsAtCurrentPosition();
+                        hideLetterIndicatorWithDelay();
+                        // Re-enable click events on individual letters
+                        for (TextView letterView : letterViews) {
+                            letterView.setClickable(true);
+                        }
+                        v.performClick();
+                        return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    // New method to show all apps but maintain current scroll position
+    private void showAllAppsAtCurrentPosition() {
+        // Get the current scroll position before changing the adapter
+        int currentScrollPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
+        
+        // Reset adapter to show all apps normally (no filter)
+        AppAdapter adapter = new AppAdapter(apps, pausedAppsList, "");
+        recyclerView.setAdapter(adapter);
+        
+        // Maintain the scroll position where the user stopped
+        if (currentScrollPosition >= 0 && currentScrollPosition < apps.size()) {
+            recyclerView.scrollToPosition(currentScrollPosition);
+        }
+        
+        // Reset letter highlighting but don't change scroll position
+        for (TextView letterView : letterViews) {
+            letterView.setTextColor(ContextCompat.getColor(getContext(), R.color.SecondaryTextColor));
+            letterView.setTextSize(12f);
+            letterView.setScaleX(1.0f);
+            letterView.setScaleY(1.0f);
+        }
+    }
+
+    private void hideLetterIndicatorWithDelay() {
+        hideIndicatorHandler.removeCallbacksAndMessages(null);
+        hideIndicatorHandler.postDelayed(() -> {
+            if (!isScrolling) {
+                ObjectAnimator fadeOut = ObjectAnimator.ofFloat(selectedLetterIndicator, "alpha", 1f, 0f);
+                fadeOut.setDuration(300);
+                fadeOut.start();
+                fadeOut.addListener(new android.animation.AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(android.animation.Animator animation) {
+                        selectedLetterIndicator.setVisibility(View.GONE);
+                        // Don't reset the scroll position or filter here anymore
+                        currentSelectedLetter = "";
+                    }
+                });
+            }
+        }, 1000); // Reduced delay to 1 second just for indicator hiding
+    }
 
     private void setupSearchBar() {
         searchEditText.addTextChangedListener(new TextWatcher() {
@@ -554,10 +797,19 @@ public class AppDrawerFragment extends Fragment{
 
         private List<AppDrawerFragment.AppListItem> appsList;
         private List<PausedApps> pausedAppsList; // New field for paused apps
+        private String filterLetter; // New field for filtering by letter
 
+        public AppAdapter(List<AppListItem> appsList, List<PausedApps> pausedAppsList, String filterLetter) {
+            this.appsList = appsList;
+            this.pausedAppsList = pausedAppsList;
+            this.filterLetter = filterLetter;
+        }
+
+        // Constructor for backward compatibility (search functionality)
         public AppAdapter(List<AppListItem> appsList, List<PausedApps> pausedAppsList) {
             this.appsList = appsList;
             this.pausedAppsList = pausedAppsList;
+            this.filterLetter = "";
         }
 
         @NonNull
@@ -573,20 +825,45 @@ public class AppDrawerFragment extends Fragment{
             holder.appName.setText(app.name);
 
             boolean isPaused = isAppPaused(app);
+            boolean matchesFilter = filterLetter.isEmpty() ||
+                app.name.toString().toUpperCase().startsWith(filterLetter);
 
-            // Set text color based on the app's paused status
+            // Set text color based on multiple factors:
+            // 1. If app is paused - use secondary color
+            // 2. If we're filtering and app doesn't match - use faded color
+            // 3. Otherwise use primary color
             if (isPaused) {
                 holder.appName.setTextColor(ContextCompat.getColor(getContext(), R.color.SecondaryTextColor));
                 holder.imageViewTimer.setVisibility(View.VISIBLE);
-            }
-            else{
+            } else if (!filterLetter.isEmpty() && !matchesFilter) {
+                // Grey out apps that don't match the filter
+                int fadedColor = ContextCompat.getColor(getContext(), R.color.SecondaryTextColor);
+                // Make it even more faded
+                fadedColor = Color.argb(100, Color.red(fadedColor), Color.green(fadedColor), Color.blue(fadedColor));
+                holder.appName.setTextColor(fadedColor);
+                holder.imageViewTimer.setVisibility(View.GONE);
+            } else {
                 holder.appName.setTextColor(ContextCompat.getColor(getContext(), R.color.PrimaryTextColor));
                 holder.imageViewTimer.setVisibility(View.GONE);
+            }
+
+            // Set alpha for visual emphasis
+            if (!filterLetter.isEmpty() && !matchesFilter) {
+                holder.itemView.setAlpha(0.3f);
+            } else {
+                holder.itemView.setAlpha(1.0f);
             }
 
             if (app.showIcon) {
                 holder.appIcon.setVisibility(View.VISIBLE);
                 holder.appIcon.setImageDrawable((Drawable) app.icon);
+
+                // Also fade the icon if needed
+                if (!filterLetter.isEmpty() && !matchesFilter) {
+                    holder.appIcon.setAlpha(0.3f);
+                } else {
+                    holder.appIcon.setAlpha(1.0f);
+                }
             } else {
                 holder.appIcon.setVisibility(View.GONE);
             }
@@ -656,5 +933,179 @@ public class AppDrawerFragment extends Fragment{
         public CharSequence name;
         public Drawable icon;
         boolean showIcon;
+    }
+
+    private void calculateLetterPositions() {
+        letterPositions.clear();
+        String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+        for (int i = 0; i < alphabet.length(); i++) {
+            String letter = String.valueOf(alphabet.charAt(i));
+            int position = findFirstPositionForLetter(letter);
+            letterPositions.put(letter, position);
+        }
+    }
+
+    private int findFirstPositionForLetter(String letter) {
+        for (int i = 0; i < apps.size(); i++) {
+            String appName = apps.get(i).name.toString().toUpperCase();
+            if (appName.startsWith(letter)) {
+                return i;
+            }
+        }
+        return -1; // Letter not found
+    }
+
+    private void highlightLetter(int index) {
+        // Reset all letter colors and sizes
+        for (int i = 0; i < letterViews.length; i++) {
+            letterViews[i].setTextColor(ContextCompat.getColor(getContext(), R.color.SecondaryTextColor));
+            letterViews[i].setTextSize(12f);
+            letterViews[i].setScaleX(1.0f);
+            letterViews[i].setScaleY(1.0f);
+        }
+
+        // Highlight selected letter with enhanced visual feedback
+        if (index >= 0 && index < letterViews.length) {
+            letterViews[index].setTextColor(ContextCompat.getColor(getContext(), R.color.PrimaryTextColor));
+            letterViews[index].setTextSize(14f);
+
+            // Add immediate scale for drag responsiveness
+            letterViews[index].setScaleX(1.3f);
+            letterViews[index].setScaleY(1.3f);
+
+            // Quick pulse animation for better visual feedback
+            ObjectAnimator scaleX = ObjectAnimator.ofFloat(letterViews[index], "scaleX", 1.3f, 1.4f, 1.3f);
+            ObjectAnimator scaleY = ObjectAnimator.ofFloat(letterViews[index], "scaleY", 1.3f, 1.4f, 1.3f);
+            AnimatorSet animatorSet = new AnimatorSet();
+            animatorSet.playTogether(scaleX, scaleY);
+            animatorSet.setDuration(100); // Shorter duration for drag responsiveness
+            animatorSet.start();
+        }
+    }
+
+    // Utility and touch handling for alphabet scroll bar
+
+    private void resetLetterHighlight() {
+        if (letterViews == null) return;
+        for (TextView letterView : letterViews) {
+            if (letterView == null) continue;
+            letterView.setTextColor(ContextCompat.getColor(getContext(), R.color.SecondaryTextColor));
+            letterView.setTextSize(12f);
+            letterView.setScaleX(1.0f);
+            letterView.setScaleY(1.0f);
+        }
+        if (selectedLetterIndicator != null) {
+            selectedLetterIndicator.setAlpha(0f);
+            selectedLetterIndicator.setVisibility(View.GONE);
+        }
+    }
+
+    private void scrollToLetter(String letter) {
+        if (letter == null || letterViews == null) return;
+        currentSelectedLetter = letter;
+        int index = letter.charAt(0) - 'A';
+        highlightLetter(index);
+        showSelectedLetterIndicator(letter);
+
+        // Just scroll to position on click, do not change adapter filtering
+        int position = findClosestPositionForLetter(letter);
+        if (position >= 0) {
+            recyclerView.scrollToPosition(position);
+        }
+
+        // Hide indicator shortly after tap
+        hideLetterIndicatorWithDelay();
+    }
+
+    private void handleOverlayTouch(MotionEvent event) {
+        if (alphabetScrollBar == null || letterViews == null) return;
+        float y = event.getY();
+        String letter = mapYToLetter(y, alphabetScrollBar.getHeight());
+        applyLetterSelection(letter);
+    }
+
+    private void handleExpandedAlphabetTouch(MotionEvent event) {
+        if (alphabetTouchArea == null || letterViews == null) return;
+        float y = event.getY(); // y within touch area
+        // Map proportionally to the alphabetScrollBar height
+        int touchHeight = alphabetTouchArea.getHeight();
+        int refHeight = alphabetScrollBar.getHeight() > 0 ? alphabetScrollBar.getHeight() : touchHeight;
+        // Scale y from touch area to reference height
+        float scaledY = refHeight > 0 && touchHeight > 0 ? (y * (refHeight / (float) touchHeight)) : y;
+        String letter = mapYToLetter(scaledY, refHeight);
+        applyLetterSelection(letter);
+    }
+
+    private void handleDirectLetterTouch(MotionEvent event) {
+        if (alphabetScrollBar == null || letterViews == null) return;
+        float y = event.getY();
+        String letter = mapYToLetter(y, alphabetScrollBar.getHeight());
+        applyLetterSelection(letter);
+    }
+
+    private String mapYToLetter(float y, int height) {
+        if (height <= 0) return "A";
+        int count = letterViews.length;
+        float unit = height / (float) count;
+        int idx = (int) (y / unit);
+        if (idx < 0) idx = 0;
+        if (idx >= count) idx = count - 1;
+        char c = (char) ('A' + idx);
+        return String.valueOf(c);
+    }
+
+    private void applyLetterSelection(String letter) {
+        if (letter == null) return;
+        currentSelectedLetter = letter;
+        int index = letter.charAt(0) - 'A';
+        highlightLetter(index);
+        showSelectedLetterIndicator(letter);
+
+        // Update adapter to visually emphasize matching apps while dragging
+        AppAdapter adapter = new AppAdapter(apps, pausedAppsList, letter);
+        // Preserve icon visibility preference
+        boolean showAppIcons = (boolean) SharedPreferencesHelper.getData(getContext(), "AppDrawerShowAppIcons", false);
+        adapter.updateAppIconVisibility(showAppIcons);
+        recyclerView.setAdapter(adapter);
+
+        // Scroll to the first app starting with the selected letter
+        int position = findClosestPositionForLetter(letter);
+        if (position >= 0) {
+            recyclerView.scrollToPosition(position);
+        }
+    }
+
+    private void showSelectedLetterIndicator(String letter) {
+        if (selectedLetterIndicator == null) return;
+        selectedLetterIndicator.setText(letter);
+        if (selectedLetterIndicator.getVisibility() != View.VISIBLE) {
+            selectedLetterIndicator.setAlpha(0f);
+            selectedLetterIndicator.setVisibility(View.VISIBLE);
+            ObjectAnimator fadeIn = ObjectAnimator.ofFloat(selectedLetterIndicator, "alpha", 0f, 1f);
+            fadeIn.setDuration(150);
+            fadeIn.start();
+        }
+    }
+
+    private int findClosestPositionForLetter(String letter) {
+        if (letterPositions == null || letterPositions.isEmpty()) return -1;
+        Integer pos = letterPositions.get(letter);
+        if (pos != null && pos >= 0) return pos;
+        // Fallback: search forward then backward for the next available letter
+        int startIdx = letter.charAt(0) - 'A';
+        // Forward
+        for (int i = startIdx + 1; i < 26; i++) {
+            String l = String.valueOf((char) ('A' + i));
+            Integer p = letterPositions.get(l);
+            if (p != null && p >= 0) return p;
+        }
+        // Backward
+        for (int i = startIdx - 1; i >= 0; i--) {
+            String l = String.valueOf((char) ('A' + i));
+            Integer p = letterPositions.get(l);
+            if (p != null && p >= 0) return p;
+        }
+        return -1;
     }
 }

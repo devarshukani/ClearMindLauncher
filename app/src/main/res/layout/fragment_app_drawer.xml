@@ -26,13 +26,423 @@
 
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@color/PrimaryBackgroundColor"
-        android:layout_marginTop="10dp"/>
+        android:layout_weight="1">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/PrimaryBackgroundColor"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="60dp"/>
+
+        <!-- Expanded touch area for A-Z scroll bar -->
+        <View
+            android:id="@+id/alphabetTouchArea"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/transparent" />
+
+        <LinearLayout
+            android:id="@+id/alphabetScrollBar"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="5dp"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:paddingVertical="30dp"
+            android:paddingHorizontal="5dp"
+            android:clickable="true"
+            android:focusable="true">
+
+            <TextView
+                android:id="@+id/letterA"
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:text="A"
+                android:textSize="12sp"
+                android:textColor="@color/SecondaryTextColor"
+                android:gravity="center"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:paddingVertical="1dp"
+                android:clickable="false"
+                android:focusable="false" />
+
+            <TextView
+                android:id="@+id/letterB"
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:text="B"
+                android:textSize="12sp"
+                android:textColor="@color/SecondaryTextColor"
+                android:gravity="center"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:paddingVertical="1dp"
+                android:clickable="false"
+                android:focusable="false" />
+
+            <TextView
+                android:id="@+id/letterC"
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:text="C"
+                android:textSize="12sp"
+                android:textColor="@color/SecondaryTextColor"
+                android:gravity="center"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:paddingVertical="1dp"
+                android:clickable="false"
+                android:focusable="false" />
+
+            <TextView
+                android:id="@+id/letterD"
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:text="D"
+                android:textSize="12sp"
+                android:textColor="@color/SecondaryTextColor"
+                android:gravity="center"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:paddingVertical="1dp"
+                android:clickable="false"
+                android:focusable="false" />
+
+            <TextView
+                android:id="@+id/letterE"
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:text="E"
+                android:textSize="12sp"
+                android:textColor="@color/SecondaryTextColor"
+                android:gravity="center"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:paddingVertical="1dp"
+                android:clickable="false"
+                android:focusable="false" />
+
+            <TextView
+                android:id="@+id/letterF"
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:text="F"
+                android:textSize="12sp"
+                android:textColor="@color/SecondaryTextColor"
+                android:gravity="center"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:paddingVertical="1dp"
+                android:clickable="false"
+                android:focusable="false" />
+
+            <TextView
+                android:id="@+id/letterG"
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:text="G"
+                android:textSize="12sp"
+                android:textColor="@color/SecondaryTextColor"
+                android:gravity="center"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:paddingVertical="1dp"
+                android:clickable="false"
+                android:focusable="false" />
+
+            <TextView
+                android:id="@+id/letterH"
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:text="H"
+                android:textSize="12sp"
+                android:textColor="@color/SecondaryTextColor"
+                android:gravity="center"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:paddingVertical="1dp"
+                android:clickable="false"
+                android:focusable="false" />
+
+            <TextView
+                android:id="@+id/letterI"
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:text="I"
+                android:textSize="12sp"
+                android:textColor="@color/SecondaryTextColor"
+                android:gravity="center"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:paddingVertical="1dp"
+                android:clickable="false"
+                android:focusable="false" />
+
+            <TextView
+                android:id="@+id/letterJ"
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:text="J"
+                android:textSize="12sp"
+                android:textColor="@color/SecondaryTextColor"
+                android:gravity="center"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:paddingVertical="1dp"
+                android:clickable="false"
+                android:focusable="false" />
+
+            <TextView
+                android:id="@+id/letterK"
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:text="K"
+                android:textSize="12sp"
+                android:textColor="@color/SecondaryTextColor"
+                android:gravity="center"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:paddingVertical="1dp"
+                android:clickable="false"
+                android:focusable="false" />
+
+            <TextView
+                android:id="@+id/letterL"
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:text="L"
+                android:textSize="12sp"
+                android:textColor="@color/SecondaryTextColor"
+                android:gravity="center"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:paddingVertical="1dp"
+                android:clickable="false"
+                android:focusable="false" />
+
+            <TextView
+                android:id="@+id/letterM"
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:text="M"
+                android:textSize="12sp"
+                android:textColor="@color/SecondaryTextColor"
+                android:gravity="center"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:paddingVertical="1dp"
+                android:clickable="false"
+                android:focusable="false" />
+
+            <TextView
+                android:id="@+id/letterN"
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:text="N"
+                android:textSize="12sp"
+                android:textColor="@color/SecondaryTextColor"
+                android:gravity="center"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:paddingVertical="1dp"
+                android:clickable="false"
+                android:focusable="false" />
+
+            <TextView
+                android:id="@+id/letterO"
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:text="O"
+                android:textSize="12sp"
+                android:textColor="@color/SecondaryTextColor"
+                android:gravity="center"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:paddingVertical="1dp"
+                android:clickable="false"
+                android:focusable="false" />
+
+            <TextView
+                android:id="@+id/letterP"
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:text="P"
+                android:textSize="12sp"
+                android:textColor="@color/SecondaryTextColor"
+                android:gravity="center"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:paddingVertical="1dp"
+                android:clickable="false"
+                android:focusable="false" />
+
+            <TextView
+                android:id="@+id/letterQ"
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:text="Q"
+                android:textSize="12sp"
+                android:textColor="@color/SecondaryTextColor"
+                android:gravity="center"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:paddingVertical="1dp"
+                android:clickable="false"
+                android:focusable="false" />
+
+            <TextView
+                android:id="@+id/letterR"
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:text="R"
+                android:textSize="12sp"
+                android:textColor="@color/SecondaryTextColor"
+                android:gravity="center"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:paddingVertical="1dp"
+                android:clickable="false"
+                android:focusable="false" />
+
+            <TextView
+                android:id="@+id/letterS"
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:text="S"
+                android:textSize="12sp"
+                android:textColor="@color/SecondaryTextColor"
+                android:gravity="center"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:paddingVertical="1dp"
+                android:clickable="false"
+                android:focusable="false" />
+
+            <TextView
+                android:id="@+id/letterT"
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:text="T"
+                android:textSize="12sp"
+                android:textColor="@color/SecondaryTextColor"
+                android:gravity="center"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:paddingVertical="1dp"
+                android:clickable="false"
+                android:focusable="false" />
+
+            <TextView
+                android:id="@+id/letterU"
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:text="U"
+                android:textSize="12sp"
+                android:textColor="@color/SecondaryTextColor"
+                android:gravity="center"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:paddingVertical="1dp"
+                android:clickable="false"
+                android:focusable="false" />
+
+            <TextView
+                android:id="@+id/letterV"
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:text="V"
+                android:textSize="12sp"
+                android:textColor="@color/SecondaryTextColor"
+                android:gravity="center"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:paddingVertical="1dp"
+                android:clickable="false"
+                android:focusable="false" />
+
+            <TextView
+                android:id="@+id/letterW"
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:text="W"
+                android:textSize="12sp"
+                android:textColor="@color/SecondaryTextColor"
+                android:gravity="center"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:paddingVertical="1dp"
+                android:clickable="false"
+                android:focusable="false" />
+
+            <TextView
+                android:id="@+id/letterX"
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:text="X"
+                android:textSize="12sp"
+                android:textColor="@color/SecondaryTextColor"
+                android:gravity="center"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:paddingVertical="1dp"
+                android:clickable="false"
+                android:focusable="false" />
+
+            <TextView
+                android:id="@+id/letterY"
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:text="Y"
+                android:textSize="12sp"
+                android:textColor="@color/SecondaryTextColor"
+                android:gravity="center"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:paddingVertical="1dp"
+                android:clickable="false"
+                android:focusable="false" />
+
+            <TextView
+                android:id="@+id/letterZ"
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:text="Z"
+                android:textSize="12sp"
+                android:textColor="@color/SecondaryTextColor"
+                android:gravity="center"
+                android:fontFamily="@font/sf_pro_display_regular"
+                android:paddingVertical="1dp"
+                android:clickable="false"
+                android:focusable="false" />
+
+        </LinearLayout>
+
+        <!-- First overlay layer for better touch handling -->
+        <View
+            android:id="@+id/alphabetOverlay1"
+            android:layout_width="45dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="2dp"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/transparent"
+            android:clickable="true"
+            android:focusable="true"
+            android:elevation="2dp" />
+
+        <!-- Second overlay layer for maximum touch priority -->
+        <View
+            android:id="@+id/alphabetOverlay2"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/transparent"
+            android:clickable="true"
+            android:focusable="true"
+            android:elevation="4dp" />
+
+        <!-- Selected letter indicator overlay -->
+        <TextView
+            android:id="@+id/selectedLetterIndicator"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/search_bar_background"
+            android:text="A"
+            android:textSize="36sp"
+            android:textColor="@color/PrimaryTextColor"
+            android:gravity="center"
+            android:fontFamily="@font/sf_pro_display_bold"
+            android:visibility="gone"
+            android:elevation="8dp" />
+
+    </RelativeLayout>
 
 
     <EditText
