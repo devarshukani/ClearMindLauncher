@@ -19,7 +19,7 @@ import com.devarshukani.clearmindlauncher.R;
 public class SettingsActivity extends AppCompatActivity {
 
     LinearLayout ButtonSystemSettings;
-    LinearLayout ButtonDefaultLauncher;
+//    LinearLayout ButtonDefaultLauncher;
 
     LinearLayout ButtonHomePage;
     LinearLayout ButtonAppDrawer;
@@ -41,7 +41,7 @@ public class SettingsActivity extends AppCompatActivity {
         animHelper = new AnimateLinearLayoutButton(); // Initialize haptics helper
 
         ButtonSystemSettings = findViewById(R.id.ButtonSystemSettings);
-        ButtonDefaultLauncher = findViewById(R.id.ButtonDefaultLauncher);
+//        ButtonDefaultLauncher = findViewById(R.id.ButtonDefaultLauncher);
 
         ButtonHomePage = findViewById(R.id.ButtonHomePage);
         ButtonAppDrawer = findViewById(R.id.ButtonAppDrawer);
@@ -63,14 +63,14 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        ButtonDefaultLauncher.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                animHelper.animateButtonClick(ButtonDefaultLauncher); // Add haptic feedback
-                Intent intent = new Intent(Settings.ACTION_HOME_SETTINGS);
-                startActivity(intent);
-            }
-        });
+//        ButtonDefaultLauncher.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                animHelper.animateButtonClick(ButtonDefaultLauncher); // Add haptic feedback
+//                Intent intent = new Intent(Settings.ACTION_HOME_SETTINGS);
+//                startActivity(intent);
+//            }
+//        });
 
         ButtonHomePage.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="30sp"
-            android:text="Permissions"
+            android:text="Privacy"
             android:fontFamily="@font/sf_pro_display_bold"
             android:textColor="@color/PrimaryTextColor"
             android:layout_marginTop="30dp"/>
