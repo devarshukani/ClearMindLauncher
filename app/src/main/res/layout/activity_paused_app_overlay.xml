@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/PrimaryBackgroundColor"
+    android:gravity="center"
+    android:padding="32dp">
+
+    <TextView
+        android:id="@+id/overlay_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Time for focus ✨"
+        android:textSize="28sp"
+        android:textColor="@color/PrimaryTextColor"
+        android:fontFamily="@font/sf_pro_display_bold"
+        android:gravity="center"
+        android:layout_marginBottom="24dp" />
+
+    <TextView
+        android:id="@+id/overlay_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="You've paused this app to give yourself space. It'll still be here later — right now, protect your focus and energy."
+        android:textSize="16sp"
+        android:textColor="@color/SecondaryTextColor"
+        android:fontFamily="@font/sf_pro_display_regular"
+        android:gravity="center"
+        android:lineSpacingMultiplier="1.2"
+        android:layout_marginBottom="40dp" />
+
+    <Button
+        android:id="@+id/btn_close_app"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="Close app"
+        android:textSize="16sp"
+        android:textColor="@color/PrimaryTextColor"
+        android:fontFamily="@font/sf_pro_display_regular"
+        android:background="@drawable/button_background"
+        android:layout_marginTop="16dp" />
+
+</LinearLayout>
