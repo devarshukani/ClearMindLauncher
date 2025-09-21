@@ -6,7 +6,10 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,11 +18,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.devarshukani.clearmindlauncher.Adapter.AppListAdapter;
 import com.devarshukani.clearmindlauncher.Utils.OnCheckedChangeListener;
 import com.devarshukani.clearmindlauncher.Fragment.AppDrawerFragment;
+import com.devarshukani.clearmindlauncher.Helper.AnimateLinearLayoutButton;
 import com.devarshukani.clearmindlauncher.R;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class FavouriteAppsSettingsActivity extends AppCompatActivity implements OnCheckedChangeListener {
@@ -27,14 +30,20 @@ public class FavouriteAppsSettingsActivity extends AppCompatActivity implements 
     private RecyclerView recyclerView;
     private AppListAdapter adapter;
     private TextView textViewSelectedCount;
+    private EditText searchEditText;
+    private AnimateLinearLayoutButton animHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favourite_apps_settings);
 
+        animHelper = new AnimateLinearLayoutButton();
+
         textViewSelectedCount = findViewById(R.id.textViewSelectedCount);
         recyclerView = findViewById(R.id.app_list_recycler_view);
+        searchEditText = findViewById(R.id.ETSearchField);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Retrieve selected apps from SharedPreferences
@@ -45,16 +54,34 @@ public class FavouriteAppsSettingsActivity extends AppCompatActivity implements 
         textViewSelectedCount.setText(String.valueOf(adapter.getSelectedCount()));
         recyclerView.setAdapter(adapter);
 
-        saveSelectedAppsToSharedPreferences();
+        setupSearchBar();
+    }
 
-        // Retrieve selected apps from SharedPreferences
-        selectedApps = getSelectedAppsFromSharedPreferences();
-        appList = getAppsInAppDrawer();
-        adapter = new AppListAdapter(this, appList, selectedApps);
-        adapter.setOnCheckedChangeListener(this);
-        textViewSelectedCount.setText(String.valueOf(adapter.getSelectedCount()));
-        recyclerView.setAdapter(adapter);
+    private void setupSearchBar() {
+        // Add haptic feedback when search bar gets focus
+        searchEditText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                animHelper.animateButtonClickWithHaptics(searchEditText);
+            }
+        });
 
+        // Add search functionality
+        searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (adapter != null) {
+                    adapter.filter(s.toString());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
     }
 
     private List<AppDrawerFragment.AppListItem> getAppsInAppDrawer() {
@@ -75,12 +102,9 @@ public class FavouriteAppsSettingsActivity extends AppCompatActivity implements 
             apps.add(app);
         }
 
-        Collections.sort(apps, new Comparator<AppDrawerFragment.AppListItem>() {
-            @Override
-            public int compare(AppDrawerFragment.AppListItem app1, AppDrawerFragment.AppListItem app2) {
-                return app1.name.toString().compareToIgnoreCase(app2.name.toString());
-            }
-        });
+        Collections.sort(apps, (app1, app2) ->
+            app1.name.toString().compareToIgnoreCase(app2.name.toString())
+        );
 
         return apps;
     }
