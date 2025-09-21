@@ -9,9 +9,9 @@ android {
     defaultConfig {
         applicationId = "com.devarshukani.clearmindlauncher"
         minSdk = 24
-        targetSdk = 33
-        versionCode = 5
-        versionName = "1.3"
+        targetSdk = 34
+        versionCode = 6
+        versionName = "1.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
