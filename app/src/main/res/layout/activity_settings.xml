@@ -451,6 +451,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/search_bar_background"
             android:layout_marginTop="20dp"
+            android:layout_marginBottom="80dp"
             android:orientation="horizontal">
 
             <ImageView
@@ -470,7 +471,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="18sp"
-                    android:text="Report a Bug"
+                    android:text="Feedback"
                     android:fontFamily="@font/sf_pro_display_regular"
                     android:textStyle="bold"
                     android:textColor="@color/PrimaryTextColor"
@@ -481,7 +482,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="15sp"
-                    android:text="Help us make a better product"
+                    android:text="Help us make a better experience"
                     android:fontFamily="@font/sf_pro_display_regular"
                     android:textColor="@color/SecondaryTextColor"
                     android:layout_marginBottom="15dp"
@@ -493,18 +494,18 @@
         </LinearLayout>
 
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:text="Crafted with ♥ in India"
-            android:fontFamily="@font/sf_pro_display_regular"
-            android:textStyle="bold"
-            android:textColor="@color/SecondaryTextColor"
-            android:layout_marginTop="40dp"
-            android:layout_marginHorizontal="15dp"
-            android:layout_marginBottom="80dp"
-            android:textAlignment="center"/>
+<!--        <TextView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:textSize="18sp"-->
+<!--            android:text="Crafted with ♥ in India"-->
+<!--            android:fontFamily="@font/sf_pro_display_regular"-->
+<!--            android:textStyle="bold"-->
+<!--            android:textColor="@color/SecondaryTextColor"-->
+<!--            android:layout_marginTop="40dp"-->
+<!--            android:layout_marginHorizontal="15dp"-->
+<!--            android:layout_marginBottom="80dp"-->
+<!--            android:textAlignment="center"/>-->
 
 
 
