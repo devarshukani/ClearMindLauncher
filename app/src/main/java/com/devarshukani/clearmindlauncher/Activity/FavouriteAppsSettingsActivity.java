@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.devarshukani.clearmindlauncher.Adapter.AppListAdapter;
@@ -53,6 +54,9 @@ public class FavouriteAppsSettingsActivity extends AppCompatActivity implements 
         adapter.setOnCheckedChangeListener(this);
         textViewSelectedCount.setText(String.valueOf(adapter.getSelectedCount()));
         recyclerView.setAdapter(adapter);
+
+        // Setup drag and drop for reordering selected apps
+        setupDragAndDrop();
 
         setupSearchBar();
     }
@@ -162,5 +166,46 @@ public class FavouriteAppsSettingsActivity extends AppCompatActivity implements 
     @Override
     public void onItemCheckedChanged(int count) {
         textViewSelectedCount.setText(String.valueOf(count));
+    }
+
+    // Setup drag and drop for reordering selected apps
+    private void setupDragAndDrop() {
+        ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, 0) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                int fromPosition = viewHolder.getAdapterPosition();
+                int toPosition = target.getAdapterPosition();
+
+                // Only allow reordering within selected apps section
+                if (adapter.canMoveItem(fromPosition) && adapter.canMoveItem(toPosition)) {
+                    adapter.moveItem(fromPosition, toPosition);
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                // No swipe action needed
+            }
+
+            @Override
+            public boolean canDropOver(RecyclerView recyclerView, RecyclerView.ViewHolder current, RecyclerView.ViewHolder target) {
+                // Only allow dropping on selected apps (before divider)
+                return adapter.canMoveItem(target.getAdapterPosition());
+            }
+
+            @Override
+            public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
+                super.onSelectedChanged(viewHolder, actionState);
+                if (actionState == ItemTouchHelper.ACTION_STATE_DRAG && viewHolder != null) {
+                    // Provide haptic feedback when drag starts
+                    animHelper.animateButtonClickWithHaptics(viewHolder.itemView);
+                }
+            }
+        };
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 }

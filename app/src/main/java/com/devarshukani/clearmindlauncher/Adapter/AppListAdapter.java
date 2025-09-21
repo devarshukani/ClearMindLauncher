@@ -46,16 +46,24 @@ public class AppListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         List<AppDrawerFragment.AppListItem> selectedAppsList = new ArrayList<>();
         List<AppDrawerFragment.AppListItem> unselectedAppsList = new ArrayList<>();
 
-        // Separate selected and unselected apps
+        // First, add selected apps in their saved order from selectedApps list
+        for (AppDrawerFragment.AppListItem selectedApp : selectedApps) {
+            for (AppDrawerFragment.AppListItem app : appList) {
+                if (app.label.equals(selectedApp.label) && app.name.equals(selectedApp.name)) {
+                    selectedAppsList.add(app);
+                    break;
+                }
+            }
+        }
+
+        // Then add unselected apps
         for (AppDrawerFragment.AppListItem app : appList) {
-            if (isSelectedApp(app)) {
-                selectedAppsList.add(app);
-            } else {
+            if (!isSelectedApp(app)) {
                 unselectedAppsList.add(app);
             }
         }
 
-        // Add selected apps first
+        // Add selected apps first (maintaining their order)
         displayList.addAll(selectedAppsList);
 
         // Add divider if there are both selected and unselected apps
@@ -188,6 +196,40 @@ public class AppListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public List<AppDrawerFragment.AppListItem> getSelectedApps() {
         return new ArrayList<>(selectedApps);
+    }
+
+    public void moveItem(int fromPosition, int toPosition) {
+        // Only allow reordering within selected apps section (before divider)
+        if (fromPosition < getSelectedAppCount() && toPosition < getSelectedAppCount()) {
+            // Move within the selectedApps list
+            AppDrawerFragment.AppListItem movedApp = selectedApps.remove(fromPosition);
+            selectedApps.add(toPosition, movedApp);
+
+            // Update display list
+            Object movedItem = displayList.remove(fromPosition);
+            displayList.add(toPosition, movedItem);
+
+            notifyItemMoved(fromPosition, toPosition);
+            return;
+        }
+    }
+
+    public boolean canMoveItem(int position) {
+        // Only allow moving selected apps (items before the divider)
+        return position < getSelectedAppCount();
+    }
+
+    private int getSelectedAppCount() {
+        int count = 0;
+        for (Object item : displayList) {
+            if (item instanceof String && "DIVIDER".equals(item)) {
+                break;
+            }
+            if (item instanceof AppDrawerFragment.AppListItem) {
+                count++;
+            }
+        }
+        return count;
     }
 
     public static class AppViewHolder extends RecyclerView.ViewHolder {
