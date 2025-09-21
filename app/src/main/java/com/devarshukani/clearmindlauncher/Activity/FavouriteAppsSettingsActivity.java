@@ -5,10 +5,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -21,10 +25,14 @@ import com.devarshukani.clearmindlauncher.Utils.OnCheckedChangeListener;
 import com.devarshukani.clearmindlauncher.Fragment.AppDrawerFragment;
 import com.devarshukani.clearmindlauncher.Helper.AnimateLinearLayoutButton;
 import com.devarshukani.clearmindlauncher.R;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class FavouriteAppsSettingsActivity extends AppCompatActivity implements OnCheckedChangeListener {
 
@@ -207,5 +215,81 @@ public class FavouriteAppsSettingsActivity extends AppCompatActivity implements 
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
+    }
+
+    // Define social media and distracting apps
+    private Set<String> getDistractingApps() {
+        return new HashSet<>(Arrays.asList(
+            // Social & Content Feeds
+            "com.instagram.android",
+            "com.ss.android.ugc.trill",
+            "com.zhiliaoapp.musically",
+            "com.facebook.katana",
+            "com.snapchat.android",
+            "com.twitter.android",
+            "com.reddit.frontpage",
+            "com.pinterest",
+            // Video & Streaming
+            "com.google.android.youtube",
+            "tv.twitch.android.app",
+            "com.netflix.mediaclient",
+            "com.amazon.avod.thirdpartyclient",
+            "in.startv.hotstar.dplus",
+            "com.disney.disneyplus",
+            "com.hulu.plus"
+        ));
+    }
+
+    private boolean isDistractingApp(String packageName) {
+        return getDistractingApps().contains(packageName);
+    }
+
+    // Check if user is trying to add a distracting app and show reality check dialog
+    public boolean checkAndShowRealityDialog(AppDrawerFragment.AppListItem app) {
+        if (isDistractingApp(app.label.toString())) {
+            showRealityCheckDialog(app);
+            return true; // Block the selection
+        }
+        return false; // Allow the selection
+    }
+
+    private void showRealityCheckDialog(AppDrawerFragment.AppListItem app) {
+        View bottomSheetView = LayoutInflater.from(this).inflate(R.layout.dialog_reality_check, null);
+
+        TextView messageTextView = bottomSheetView.findViewById(R.id.textViewRealityCheckMessage);
+        Button buttonChangedMind = bottomSheetView.findViewById(R.id.buttonChangedMind);
+        TextView buttonAddAnyway = bottomSheetView.findViewById(R.id.buttonAddAnyway);
+        TextView buttonUninstallLauncher = bottomSheetView.findViewById(R.id.buttonUninstallLauncher);
+
+        // Set the message with app name
+        String message = String.format("Adding %s to your Favorites is basically giving distractions a VIP pass. If you value your time, don't add it. If you insist, we'll add it — but don't blame the launcher when your day disappears.", app.name);
+        messageTextView.setText(message);
+
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        bottomSheetDialog.setContentView(bottomSheetView);
+
+        buttonChangedMind.setOnClickListener(v -> {
+            animHelper.animateButtonClickWithHaptics(buttonChangedMind);
+            bottomSheetDialog.dismiss();
+        });
+
+        buttonAddAnyway.setOnClickListener(v -> {
+            animHelper.animateButtonClickWithHaptics(buttonAddAnyway);
+            // Force add the app despite warning
+            adapter.forceAddApp(app);
+            onItemCheckedChanged(adapter.getSelectedCount());
+            bottomSheetDialog.dismiss();
+        });
+
+        buttonUninstallLauncher.setOnClickListener(v -> {
+            animHelper.animateButtonClickWithHaptics(buttonUninstallLauncher);
+            // Uninstall the launcher
+            Intent intent = new Intent(Intent.ACTION_DELETE);
+            intent.setData(Uri.parse("package:" + getPackageName()));
+            startActivity(intent);
+            bottomSheetDialog.dismiss();
+        });
+
+        bottomSheetDialog.show();
     }
 }

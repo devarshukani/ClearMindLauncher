@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.devarshukani.clearmindlauncher.Fragment.AppDrawerFragment;
 import com.devarshukani.clearmindlauncher.R;
 import com.devarshukani.clearmindlauncher.Utils.OnCheckedChangeListener;
+import com.devarshukani.clearmindlauncher.Activity.FavouriteAppsSettingsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -145,21 +146,53 @@ public class AppListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     // Remove from selected apps
                     removeFromSelectedApps(appInfo);
                     selectedCount--;
+
+                    if (listener != null) {
+                        listener.onItemCheckedChanged(selectedCount);
+                    }
+
+                    // Rebuild the display list to move selected items to top
+                    List<AppDrawerFragment.AppListItem> currentApps = getCurrentAppList();
+                    updateDisplayList(currentApps);
+                    notifyDataSetChanged();
                 } else if (selectedCount < MAX_SELECTIONS) {
-                    // Add to selected apps
+                    // Check if this is a distracting app first
+                    if (context instanceof FavouriteAppsSettingsActivity) {
+                        FavouriteAppsSettingsActivity activity = (FavouriteAppsSettingsActivity) context;
+                        if (activity.checkAndShowRealityDialog(appInfo)) {
+                            // Reality check dialog shown, reset checkbox to unchecked state
+                            appHolder.appCheckBox.setChecked(false);
+                            return;
+                        }
+                    }
+
+                    // Add to selected apps (normal apps or user chose "Add anyway")
                     addToSelectedApps(appInfo);
                     selectedCount++;
-                }
 
-                if (listener != null) {
-                    listener.onItemCheckedChanged(selectedCount);
-                }
+                    if (listener != null) {
+                        listener.onItemCheckedChanged(selectedCount);
+                    }
 
-                // Rebuild the display list to move selected items to top
-                List<AppDrawerFragment.AppListItem> currentApps = getCurrentAppList();
-                updateDisplayList(currentApps);
-                notifyDataSetChanged();
+                    // Rebuild the display list to move selected items to top
+                    List<AppDrawerFragment.AppListItem> currentApps = getCurrentAppList();
+                    updateDisplayList(currentApps);
+                    notifyDataSetChanged();
+                }
             });
+        }
+    }
+
+    // Method to force add an app (used when user chooses "Add anyway" from reality check dialog)
+    public void forceAddApp(AppDrawerFragment.AppListItem app) {
+        if (selectedCount < MAX_SELECTIONS && !isSelectedApp(app)) {
+            addToSelectedApps(app);
+            selectedCount++;
+
+            // Rebuild the display list to move selected items to top
+            List<AppDrawerFragment.AppListItem> currentApps = getCurrentAppList();
+            updateDisplayList(currentApps);
+            notifyDataSetChanged();
         }
     }
 
