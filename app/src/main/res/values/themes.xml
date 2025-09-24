@@ -1,15 +1,22 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.ClearMindLauncher" parent="@style/Theme.Material3.Light.NoActionBar">
-        <item name="android:windowBackground" >@color/PrimaryBackgroundColor</item>
-        <item name="android:windowShowWallpaper" >false</item>
-        <item name="android:navigationBarColor" >@color/PrimaryBackgroundColor</item>
-        <item name="android:colorPrimaryDark" >@color/PrimaryBackgroundColor</item>
+        <item name="android:windowBackground">@color/PrimaryBackgroundColor</item>
+        <item name="android:windowShowWallpaper">false</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:colorPrimaryDark">@color/PrimaryBackgroundColor</item>
         <item name="android:windowAnimationStyle">@style/CustomActivityAnimations</item>
 
+        <!-- Enable edge-to-edge display -->
+        <item name="android:windowLayoutInDisplayCutoutMode" tools:targetApi="p">shortEdges</item>
+        <item name="android:enforceNavigationBarContrast" tools:targetApi="q">false</item>
+        <item name="android:enforceStatusBarContrast" tools:targetApi="q">false</item>
+
+        <!-- Keyboard handling -->
+        <item name="android:windowSoftInputMode">adjustResize</item>
     </style>
 
     <style name="Theme.ClearMindLauncher" parent="Base.Theme.ClearMindLauncher" />
-
 
 </resources>

@@ -21,6 +21,8 @@ import android.os.Looper;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -37,6 +39,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -547,12 +550,95 @@ public class AppDrawerFragment extends Fragment{
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 filterApps(s.toString());
+
+                // Hide/show A-Z scrollbar based on search text
+                toggleAlphabetScrollBar(s.toString().trim().isEmpty());
             }
 
             @Override
             public void afterTextChanged(Editable s) {
             }
         });
+
+        // Handle focus changes to move search bar above keyboard
+        searchEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    animHelper.animateButtonClickWithHaptics(searchEditText);
+                    // Adjust layout when keyboard appears
+                    adjustLayoutForKeyboard(true);
+                } else {
+                    // Reset layout when keyboard disappears
+                    adjustLayoutForKeyboard(false);
+                }
+            }
+        });
+    }
+
+    private void toggleAlphabetScrollBar(boolean visible) {
+        int visibility = visible ? View.VISIBLE : View.GONE;
+        if (alphabetScrollBar != null) {
+            alphabetScrollBar.setVisibility(visibility);
+        }
+        if (alphabetTouchArea != null) {
+            alphabetTouchArea.setVisibility(visibility);
+        }
+        if (alphabetOverlay1 != null) {
+            alphabetOverlay1.setVisibility(visibility);
+        }
+        if (alphabetOverlay2 != null) {
+            alphabetOverlay2.setVisibility(visibility);
+        }
+
+        // Adjust RecyclerView margin based on A-Z scrollbar visibility
+        // Fix: Use RelativeLayout.LayoutParams since RecyclerView is inside RelativeLayout
+        ViewGroup.LayoutParams layoutParams = recyclerView.getLayoutParams();
+        if (layoutParams instanceof RelativeLayout.LayoutParams) {
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) layoutParams;
+            if (visible) {
+                params.rightMargin = (int) (60 * getResources().getDisplayMetrics().density); // 60dp in px
+            } else {
+                params.rightMargin = 0;
+            }
+            recyclerView.setLayoutParams(params);
+        }
+    }
+
+    private void adjustLayoutForKeyboard(boolean keyboardVisible) {
+        View rootView = getView();
+        if (rootView == null) return;
+
+        if (keyboardVisible) {
+            // Move search bar and content up when keyboard is visible
+            rootView.post(() -> {
+                // Apply bottom padding to push content above keyboard
+                ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
+                    androidx.core.graphics.Insets imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime());
+                    androidx.core.graphics.Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+
+                    // Apply padding for system bars and IME
+                    v.setPadding(
+                        systemBars.left,
+                        systemBars.top,
+                        systemBars.right,
+                        Math.max(imeInsets.bottom, systemBars.bottom)
+                    );
+
+                    return insets;
+                });
+            });
+        } else {
+            // Reset to normal layout when keyboard is hidden
+            ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
+                androidx.core.graphics.Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+
+                // Apply padding only for system bars
+                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+
+                return insets;
+            });
+        }
     }
 
     private void filterApps(String searchText) {

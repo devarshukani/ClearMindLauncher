@@ -1,6 +1,9 @@
 package com.devarshukani.clearmindlauncher.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowCompat;
 
 import android.app.AppOpsManager;
 import android.app.WallpaperManager;
@@ -14,6 +17,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.view.View;
 
 import com.devarshukani.clearmindlauncher.Service.AppBlockerService;
 import com.devarshukani.clearmindlauncher.Utils.HomeWatcher;
@@ -28,7 +32,23 @@ public class LauncherActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Enable edge-to-edge display
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+
         setContentView(R.layout.activity_launcher);
+
+        // Handle window insets for safe areas
+        View rootView = findViewById(R.id.fragment_container);
+        ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
+            // Get system bar insets
+            androidx.core.graphics.Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+
+            // Apply padding to avoid status bar and navigation bar overlap
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+
+            return insets;
+        });
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         if (!isMyLauncherDefault()) {

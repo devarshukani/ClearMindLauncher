@@ -78,7 +78,7 @@
             android:launchMode="singleTask"
             android:stateNotNeeded="true"
             android:theme="@style/Base.Theme.ClearMindLauncher"
-            android:windowSoftInputMode="stateVisible|adjustResize">
+            android:windowSoftInputMode="adjustResize|stateHidden">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
