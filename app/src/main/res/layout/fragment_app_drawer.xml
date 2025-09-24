@@ -12,7 +12,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:layout_marginHorizontal="20dp"
         android:gravity="end">
 
@@ -460,7 +460,7 @@
             android:background="@drawable/search_bar_background"
             android:paddingTop="12dp"
             android:paddingHorizontal="20dp"
-            android:paddingBottom="15dp"
+            android:paddingBottom="10dp"
             android:textColorHint="@color/SecondaryTextColor"
             android:textColor="@color/PrimaryTextColor"
             android:textSize="20sp"
@@ -468,7 +468,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/sf_pro_display_regular"
             android:layout_marginHorizontal="20dp"
-            android:layout_marginVertical="25dp"
+            android:layout_marginVertical="20dp"
             android:drawableStart="@drawable/ic_search"
             android:drawableTint="@color/SecondaryTextColor"
             android:drawablePadding="15dp"

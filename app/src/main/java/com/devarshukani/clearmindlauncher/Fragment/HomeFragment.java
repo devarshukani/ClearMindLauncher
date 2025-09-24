@@ -630,6 +630,8 @@ public class HomeFragment extends Fragment implements GestureDetector.OnGestureL
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    // Add haptic feedback when clicking favorite apps
+                    animHelper.animateButtonClickWithHaptics(v);
                     launchApp(app);
                 }
             });

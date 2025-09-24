@@ -66,6 +66,15 @@ public class CustomViewPager2 extends FrameLayout {
         return viewPager.getCurrentItem();
     }
 
+    // Add method to register page change callbacks for haptic feedback
+    public void registerOnPageChangeCallback(ViewPager2.OnPageChangeCallback callback) {
+        viewPager.registerOnPageChangeCallback(callback);
+    }
+
+    public void unregisterOnPageChangeCallback(ViewPager2.OnPageChangeCallback callback) {
+        viewPager.unregisterOnPageChangeCallback(callback);
+    }
+
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         // Only allow swipe-down gesture on HomeFragment (position 0)

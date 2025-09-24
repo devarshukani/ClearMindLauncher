@@ -1074,6 +1074,8 @@ public class AppDrawerFragment extends Fragment{
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    // Add haptic feedback when clicking apps in app drawer
+                    animHelper.animateButtonClickWithHaptics(v);
                     launchApp(app);
                 }
             });
@@ -1193,6 +1195,8 @@ public class AppDrawerFragment extends Fragment{
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    // Add haptic feedback when clicking search results
+                    animHelper.animateButtonClickWithHaptics(v);
                     handleSearchResultClick(searchResult);
                 }
             });
