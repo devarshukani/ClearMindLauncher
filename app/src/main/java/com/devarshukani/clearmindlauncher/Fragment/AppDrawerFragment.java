@@ -1290,23 +1290,7 @@ public class AppDrawerFragment extends Fragment{
             case CHATGPT:
                 // Try to open ChatGPT app or web version with search query
                 try {
-                    // First try to open the ChatGPT app
-                    Intent chatgptIntent = manager.getLaunchIntentForPackage("com.openai.chatgpt");
-                    if (chatgptIntent != null) {
-                        // Try to pass the query to ChatGPT app using Intent extras
-                        // Note: ChatGPT app may not support direct query passing, but we'll try
-                        chatgptIntent.putExtra("query", searchResult.query);
-                        chatgptIntent.putExtra("text", searchResult.query);
-                        chatgptIntent.putExtra(Intent.EXTRA_TEXT, searchResult.query);
-                        chatgptIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                        // Clear search and launch ChatGPT app
-                        InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
-                        searchEditText.clearFocus();
-                        searchEditText.setText("");
-                        startActivity(chatgptIntent);
-                    } else {
                         // Fallback to ChatGPT web version with query parameter
                         String chatgptUrl = "https://chat.openai.com/?q=" + Uri.encode(searchResult.query);
                         Intent webIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(chatgptUrl));
@@ -1317,7 +1301,6 @@ public class AppDrawerFragment extends Fragment{
                         searchEditText.clearFocus();
                         searchEditText.setText("");
                         startActivity(webIntent);
-                    }
                 } catch (Exception e) {
                     showToastWithCooldown("Unable to open ChatGPT");
                 }
