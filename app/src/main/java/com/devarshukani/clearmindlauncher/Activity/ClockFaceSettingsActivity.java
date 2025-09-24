@@ -2,6 +2,9 @@ package com.devarshukani.clearmindlauncher.Activity;
 
 import static com.devarshukani.clearmindlauncher.Helper.SharedPreferencesHelper.saveData;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowCompat;
 
 import android.os.Bundle;
 import android.view.View;
@@ -20,7 +23,22 @@ public class ClockFaceSettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Enable edge-to-edge display
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+
         setContentView(R.layout.activity_clock_face_settings);
+
+        // Handle window insets for safe areas
+        View rootView = findViewById(android.R.id.content);
+        ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
+            androidx.core.graphics.Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+
+            // Apply padding to avoid status bar and navigation bar overlap
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+
+            return insets;
+        });
 
         clock1button = findViewById(R.id.clock1button);
         clock2button = findViewById(R.id.clock2button);

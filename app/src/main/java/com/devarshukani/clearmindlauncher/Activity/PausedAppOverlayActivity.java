@@ -10,6 +10,10 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowCompat;
+
 import com.devarshukani.clearmindlauncher.Helper.AnimateLinearLayoutButton;
 import com.devarshukani.clearmindlauncher.R;
 
@@ -21,7 +25,22 @@ public class PausedAppOverlayActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Enable edge-to-edge display
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+
         setContentView(R.layout.activity_paused_app_overlay);
+
+        // Handle window insets for safe areas
+        View rootView = findViewById(android.R.id.content);
+        ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
+            androidx.core.graphics.Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+
+            // Apply padding to avoid status bar and navigation bar overlap
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+
+            return insets;
+        });
 
         // Make this activity appear over other apps
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
