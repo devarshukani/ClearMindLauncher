@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@drawable/app_item_background"
+    android:layout_marginLeft="15dp"
+    android:layout_marginRight="15dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:layout_marginVertical="3dp">
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/imageViewIcon"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:visibility="gone"
+        android:layout_marginRight="10dp"
+        android:layout_gravity="center"
+        android:scaleType="centerCrop" />
+
+    <TextView
+        android:id="@+id/textViewName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textSize="22sp"
+        android:textColor="@color/PrimaryTextColor"
+        android:fontFamily="@font/sf_pro_display_regular"
+        android:text="Search Result"
+        android:layout_gravity="center"
+        android:paddingVertical="12dp"/>
+
+    <TextView
+        android:id="@+id/textViewType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="@color/SecondaryTextColor"
+        android:fontFamily="@font/sf_pro_display_regular"
+        android:text="App"
+        android:layout_gravity="center"
+        android:layout_marginLeft="10dp"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="4dp" />
+
+    <ImageView
+        android:id="@+id/imageViewTimer"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:src="@drawable/ic_timer"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="10dp"
+        app:tint="@color/SecondaryTextColor"
+        android:visibility="gone" />
+
+</LinearLayout>

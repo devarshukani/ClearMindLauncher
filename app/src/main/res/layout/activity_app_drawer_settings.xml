@@ -68,6 +68,52 @@
                 app:thumbTint="@android:color/white"
                 app:trackTint="@color/switch_track_tint_selector" />
 
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/search_bar_background"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:text="Quick Search"
+                    android:fontFamily="@font/sf_pro_display_regular"
+                    android:textStyle="bold"
+                    android:textColor="@color/PrimaryTextColor"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginHorizontal="15dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:text="Show Google &amp; ChatGPT search options"
+                    android:fontFamily="@font/sf_pro_display_regular"
+                    android:textColor="@color/SecondaryTextColor"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginHorizontal="15dp"/>
+
+            </LinearLayout>
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/switchQuickSearch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginRight="15dp"
+                app:thumbTint="@android:color/white"
+                app:trackTint="@color/switch_track_tint_selector" />
 
         </LinearLayout>
 
@@ -116,7 +162,6 @@
                 app:thumbTint="@android:color/white"
                 app:trackTint="@color/switch_track_tint_selector" />
 
-
         </LinearLayout>
 
         <LinearLayout
@@ -164,106 +209,7 @@
                 app:thumbTint="@color/PrimaryTextColor"
                 app:trackTint="@color/switch_track_tint_selector"/>
 
-
         </LinearLayout>
-
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:background="@drawable/search_bar_background"-->
-<!--            android:layout_marginTop="20dp"-->
-<!--            android:orientation="horizontal">-->
-
-<!--            <LinearLayout-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_weight="1"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:orientation="vertical">-->
-
-<!--                <TextView-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:textSize="18sp"-->
-<!--                    android:text="Hide Paused Apps"-->
-<!--                    android:fontFamily="@font/sf_pro_display_regular"-->
-<!--                    android:textStyle="bold"-->
-<!--                    android:textColor="@color/PrimaryTextColor"-->
-<!--                    android:layout_marginTop="12dp"-->
-<!--                    android:layout_marginHorizontal="15dp"/>-->
-
-<!--                <TextView-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:textSize="15sp"-->
-<!--                    android:text="paused apps will not be displayed"-->
-<!--                    android:fontFamily="@font/sf_pro_display_regular"-->
-<!--                    android:textColor="@color/SecondaryTextColor"-->
-<!--                    android:layout_marginBottom="15dp"-->
-<!--                    android:layout_marginHorizontal="15dp"/>-->
-
-<!--            </LinearLayout>-->
-
-<!--            <com.google.android.material.switchmaterial.SwitchMaterial-->
-<!--                android:id="@+id/switchHidePausedApps"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_gravity="center"-->
-<!--                android:layout_marginRight="15dp"-->
-<!--                app:thumbTint="@android:color/white"-->
-<!--                app:trackTint="@color/switch_track_tint_selector" />-->
-
-
-<!--        </LinearLayout>-->
-
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:background="@drawable/search_bar_background"-->
-<!--            android:layout_marginTop="20dp"-->
-<!--            android:orientation="horizontal">-->
-
-<!--            <LinearLayout-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_weight="1"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:orientation="vertical">-->
-
-<!--                <TextView-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:textSize="18sp"-->
-<!--                    android:text="Search Bar Postition"-->
-<!--                    android:fontFamily="@font/sf_pro_display_regular"-->
-<!--                    android:textStyle="bold"-->
-<!--                    android:textColor="@color/PrimaryTextColor"-->
-<!--                    android:layout_marginTop="12dp"-->
-<!--                    android:layout_marginHorizontal="15dp"/>-->
-
-<!--                <TextView-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:textSize="15sp"-->
-<!--                    android:text="Change search bar position"-->
-<!--                    android:fontFamily="@font/sf_pro_display_regular"-->
-<!--                    android:textColor="@color/SecondaryTextColor"-->
-<!--                    android:layout_marginBottom="15dp"-->
-<!--                    android:layout_marginHorizontal="15dp"/>-->
-
-<!--            </LinearLayout>-->
-
-<!--            <Spinner-->
-<!--                android:id="@+id/spinnerSearchBarPosition"-->
-<!--                android:layout_width="120dp"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_gravity="center"-->
-<!--                style="@style/CustomSpinnerStyle"-->
-<!--                android:padding="7dp"-->
-<!--                android:layout_marginRight="15dp"/>-->
-
-
-<!--        </LinearLayout>-->
-
-
 
 
     </LinearLayout>

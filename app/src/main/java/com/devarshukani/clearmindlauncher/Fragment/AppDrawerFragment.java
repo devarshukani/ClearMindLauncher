@@ -74,6 +74,7 @@ public class AppDrawerFragment extends Fragment{
 
     private PackageManager manager;
     private List<AppDrawerFragment.AppListItem> apps;
+    private List<SearchResultItem> searchResults; // New list for search results
     private RecyclerView recyclerView;
     private EditText searchEditText;
     private ImageButton btnSettings;
@@ -106,6 +107,29 @@ public class AppDrawerFragment extends Fragment{
     // Haptics throttle: ensure we don't fire vibrations too rapidly while dragging
     private long lastHapticTime = 0L;
     private static final long HAPTIC_COOLDOWN_MS = 40L; // min 40ms between haptics
+
+    // Search result item class
+    public static class SearchResultItem {
+        public enum SearchType {
+            APP, GOOGLE, CHATGPT
+        }
+
+        public CharSequence name;
+        public String packageName;
+        public Drawable icon;
+        public SearchType type;
+        public String query;
+        public boolean showIcon;
+
+        public SearchResultItem(CharSequence name, String packageName, Drawable icon, SearchType type, String query, boolean showIcon) {
+            this.name = name;
+            this.packageName = packageName;
+            this.icon = icon;
+            this.type = type;
+            this.query = query;
+            this.showIcon = showIcon;
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -532,26 +556,76 @@ public class AppDrawerFragment extends Fragment{
     }
 
     private void filterApps(String searchText) {
-        List<AppDrawerFragment.AppListItem> filteredApps = new ArrayList<>();
+        boolean quickSearchEnabled = (boolean) SharedPreferencesHelper.getData(getContext(), "AppDrawerQuickSearch", false);
 
-        for (AppDrawerFragment.AppListItem app : apps) {
-            if (app.name.toString().toLowerCase().contains(searchText.toLowerCase())) {
-                filteredApps.add(app);
+        if (quickSearchEnabled && !searchText.trim().isEmpty()) {
+            // Quick Search mode: show apps + Google + ChatGPT search options
+            searchResults = new ArrayList<>();
+
+            // Add matching apps to search results
+            for (AppDrawerFragment.AppListItem app : apps) {
+                if (app.name.toString().toLowerCase().contains(searchText.toLowerCase())) {
+                    SearchResultItem appResult = new SearchResultItem(
+                        app.name,
+                        app.label.toString(),
+                        app.icon,
+                        SearchResultItem.SearchType.APP,
+                        searchText,
+                        (boolean) SharedPreferencesHelper.getData(getContext(), "AppDrawerShowAppIcons", false)
+                    );
+                    searchResults.add(appResult);
+                }
             }
-        }
 
-        // Get the current setting for showing app icons
-        boolean showAppIcons = (boolean) SharedPreferencesHelper.getData(getContext(), "AppDrawerShowAppIcons", false);
+            // Add Google search option (no icon)
+            SearchResultItem googleResult = new SearchResultItem(
+                    searchText,
+                "com.google.search",
+                null, // No icon for Google
+                SearchResultItem.SearchType.GOOGLE,
+                searchText,
+                false // Don't show icon
+            );
+            searchResults.add(googleResult);
 
-        AppDrawerFragment.AppAdapter adapter = new AppDrawerFragment.AppAdapter(filteredApps, pausedAppsList);
-        // Update icon visibility for the new adapter
-        adapter.updateAppIconVisibility(showAppIcons);
-        recyclerView.setAdapter(adapter);
+            // Add ChatGPT search option (no icon)
+            SearchResultItem chatgptResult = new SearchResultItem(
+                    searchText,
+                "com.openai.chatgpt",
+                null, // No icon for ChatGPT
+                SearchResultItem.SearchType.CHATGPT,
+                searchText,
+                false // Don't show icon
+            );
+            searchResults.add(chatgptResult);
 
-        if (filteredApps.size() == 1) {
-            boolean autoStartApp = (boolean) SharedPreferencesHelper.getData(getContext(), "AppDrawerAutoStartApp", true);
-            if(autoStartApp){
-                launchApp(filteredApps.get(0));
+            // Use QuickSearchAdapter for Quick Search results
+            QuickSearchAdapter adapter = new QuickSearchAdapter(searchResults, pausedAppsList);
+            recyclerView.setAdapter(adapter);
+
+        } else {
+            // Normal search mode: only show matching apps
+            List<AppDrawerFragment.AppListItem> filteredApps = new ArrayList<>();
+
+            for (AppDrawerFragment.AppListItem app : apps) {
+                if (app.name.toString().toLowerCase().contains(searchText.toLowerCase())) {
+                    filteredApps.add(app);
+                }
+            }
+
+            // Get the current setting for showing app icons
+            boolean showAppIcons = (boolean) SharedPreferencesHelper.getData(getContext(), "AppDrawerShowAppIcons", false);
+
+            AppDrawerFragment.AppAdapter adapter = new AppDrawerFragment.AppAdapter(filteredApps, pausedAppsList);
+            // Update icon visibility for the new adapter
+            adapter.updateAppIconVisibility(showAppIcons);
+            recyclerView.setAdapter(adapter);
+
+            if (filteredApps.size() == 1) {
+                boolean autoStartApp = (boolean) SharedPreferencesHelper.getData(getContext(), "AppDrawerAutoStartApp", true);
+                if(autoStartApp){
+                    launchApp(filteredApps.get(0));
+                }
             }
         }
     }
@@ -971,12 +1045,189 @@ public class AppDrawerFragment extends Fragment{
         }
     }
 
-    public static class AppListItem {
-        public CharSequence label;
-        public CharSequence name;
-        public Drawable icon;
-        boolean showIcon;
+    // QuickSearchAdapter for handling search results with Google and ChatGPT options
+    private class QuickSearchAdapter extends RecyclerView.Adapter<QuickSearchAdapter.QuickSearchViewHolder> {
+
+        private List<SearchResultItem> searchResults;
+        private List<PausedApps> pausedAppsList;
+
+        public QuickSearchAdapter(List<SearchResultItem> searchResults, List<PausedApps> pausedAppsList) {
+            this.searchResults = searchResults;
+            this.pausedAppsList = pausedAppsList;
+        }
+
+        @NonNull
+        @Override
+        public QuickSearchViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_quick_search, parent, false);
+            return new QuickSearchViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull QuickSearchViewHolder holder, int position) {
+            SearchResultItem searchResult = searchResults.get(position);
+
+            holder.textViewName.setText(searchResult.name);
+
+            // Set the appropriate type indicator
+            switch (searchResult.type) {
+                case APP:
+                    holder.textViewType.setText("App");
+                    // Check if app is paused for apps
+                    boolean isPaused = isAppPausedByPackage(searchResult.packageName);
+                    if (isPaused) {
+                        holder.imageViewTimer.setVisibility(View.VISIBLE);
+                        holder.textViewName.setTextColor(ContextCompat.getColor(getContext(), R.color.SecondaryTextColor));
+                    } else {
+                        holder.imageViewTimer.setVisibility(View.GONE);
+                        holder.textViewName.setTextColor(ContextCompat.getColor(getContext(), R.color.PrimaryTextColor));
+                    }
+                    break;
+                case GOOGLE:
+                    holder.textViewType.setText("Google");
+                    holder.imageViewTimer.setVisibility(View.GONE);
+                    holder.textViewName.setTextColor(ContextCompat.getColor(getContext(), R.color.PrimaryTextColor));
+                    break;
+                case CHATGPT:
+                    holder.textViewType.setText("ChatGPT");
+                    holder.imageViewTimer.setVisibility(View.GONE);
+                    holder.textViewName.setTextColor(ContextCompat.getColor(getContext(), R.color.PrimaryTextColor));
+                    break;
+            }
+
+            // Show icon if available
+            if (searchResult.showIcon && searchResult.icon != null) {
+                holder.imageViewIcon.setVisibility(View.VISIBLE);
+                holder.imageViewIcon.setImageDrawable(searchResult.icon);
+            } else {
+                holder.imageViewIcon.setVisibility(View.GONE);
+            }
+
+            // Set click listener
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    handleSearchResultClick(searchResult);
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return searchResults.size();
+        }
+
+        class QuickSearchViewHolder extends RecyclerView.ViewHolder {
+            TextView textViewName;
+            TextView textViewType;
+            ImageView imageViewIcon;
+            ImageView imageViewTimer;
+
+            public QuickSearchViewHolder(@NonNull View itemView) {
+                super(itemView);
+                textViewName = itemView.findViewById(R.id.textViewName);
+                textViewType = itemView.findViewById(R.id.textViewType);
+                imageViewIcon = itemView.findViewById(R.id.imageViewIcon);
+                imageViewTimer = itemView.findViewById(R.id.imageViewTimer);
+            }
+        }
     }
+
+    // Helper method to check if app is paused by package name
+    private boolean isAppPausedByPackage(String packageName) {
+        long currentTimeMillis = System.currentTimeMillis();
+        for (PausedApps pausedApp : pausedAppsList) {
+            long startTimeMillis = Long.parseLong(pausedApp.getPausedStartTime());
+            long endTimeMillis = Long.parseLong(pausedApp.getPausedEndTime());
+
+            if (currentTimeMillis >= startTimeMillis && currentTimeMillis <= endTimeMillis &&
+                    packageName.equals(pausedApp.getPackageName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Handle clicks on search results
+    private void handleSearchResultClick(SearchResultItem searchResult) {
+        switch (searchResult.type) {
+            case APP:
+                // Launch the app normally
+                Intent launchIntent = manager.getLaunchIntentForPackage(searchResult.packageName);
+                if (launchIntent != null) {
+                    boolean isPaused = isAppPausedByPackage(searchResult.packageName);
+
+                    if (isPaused) {
+                        boolean temporaryAccess = (boolean) SharedPreferencesHelper.getData(getContext(), "AppPauseControlsTemporaryAccess", false);
+                        if (!temporaryAccess) {
+                            showToastWithCooldown(searchResult.name + " is paused");
+                        } else {
+                            // Create a temporary AppListItem for the paused app dialog
+                            AppListItem tempApp = new AppListItem();
+                            tempApp.name = searchResult.name;
+                            tempApp.label = searchResult.packageName;
+                            tempApp.icon = searchResult.icon;
+                            showTemporaryAccessDialogWithCooldown(tempApp);
+                        }
+                    } else {
+                        // Clear search and launch app
+                        InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputMethodManager.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
+                        searchEditText.clearFocus();
+                        searchEditText.setText("");
+                        startActivity(launchIntent);
+                    }
+                }
+                break;
+
+            case GOOGLE:
+                // Open Google search with the query
+                try {
+                    String googleSearchUrl = "https://www.google.com/search?q=" + Uri.encode(searchResult.query);
+                    Intent googleIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(googleSearchUrl));
+
+                    // Clear search and launch Google
+                    InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputMethodManager.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
+                    searchEditText.clearFocus();
+                    searchEditText.setText("");
+                    startActivity(googleIntent);
+                } catch (Exception e) {
+                    showToastWithCooldown("Unable to open Google search");
+                }
+                break;
+
+            case CHATGPT:
+                // Try to open ChatGPT app or web version
+                try {
+                    // First try to open the ChatGPT app
+                    Intent chatgptIntent = manager.getLaunchIntentForPackage("com.openai.chatgpt");
+                    if (chatgptIntent != null) {
+                        // Clear search and launch ChatGPT app
+                        InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputMethodManager.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
+                        searchEditText.clearFocus();
+                        searchEditText.setText("");
+                        startActivity(chatgptIntent);
+                    } else {
+                        // Fallback to ChatGPT web version
+                        String chatgptUrl = "https://chat.openai.com/";
+                        Intent webIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(chatgptUrl));
+
+                        // Clear search and launch ChatGPT web
+                        InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputMethodManager.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
+                        searchEditText.clearFocus();
+                        searchEditText.setText("");
+                        startActivity(webIntent);
+                    }
+                } catch (Exception e) {
+                    showToastWithCooldown("Unable to open ChatGPT");
+                }
+                break;
+        }
+    }
+
 
     private void calculateLetterPositions() {
         letterPositions.clear();
@@ -1232,5 +1483,12 @@ public class AppDrawerFragment extends Fragment{
             if (p != null && p >= 0) return p;
         }
         return -1;
+    }
+
+    public static class AppListItem {
+        public CharSequence label;
+        public CharSequence name;
+        public Drawable icon;
+        boolean showIcon;
     }
 }
