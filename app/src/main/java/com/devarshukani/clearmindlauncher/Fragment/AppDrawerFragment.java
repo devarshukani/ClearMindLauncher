@@ -156,6 +156,8 @@ public class AppDrawerFragment extends Fragment{
         alphabetOverlay2 = view.findViewById(R.id.alphabetOverlay2);
         selectedLetterIndicator = view.findViewById(R.id.selectedLetterIndicator);
         searchContainer = view.findViewById(R.id.searchContainer);
+        // Ensure default position
+        if (searchContainer != null) searchContainer.setTranslationY(0f);
 
         loadApps();
         setupRecyclerView(view);
@@ -229,6 +231,23 @@ public class AppDrawerFragment extends Fragment{
         loadApps();
         setupRecyclerView(getView());
         setupSearchBar();
+
+        // Re-evaluate current insets and correct search bar placement on return
+        View root = getView();
+        if (root != null && searchContainer != null) {
+            root.post(() -> {
+                WindowInsetsCompat insets = ViewCompat.getRootWindowInsets(root);
+                if (insets != null) {
+                    boolean imeVisible = insets.isVisible(WindowInsetsCompat.Type.ime());
+                    Insets ime = insets.getInsets(WindowInsetsCompat.Type.ime());
+                    Insets sys = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+                    int overlap = Math.max(0, ime.bottom - sys.bottom);
+                    searchContainer.setTranslationY(imeVisible ? -overlap : 0f);
+                } else {
+                    searchContainer.setTranslationY(0f);
+                }
+            });
+        }
     }
 
     @Override
@@ -238,6 +257,19 @@ public class AppDrawerFragment extends Fragment{
         if (recyclerView != null) {
             recyclerView.scrollToPosition(0);
         }
+
+        // Clear focus and hide keyboard when leaving, reset search bar position
+        try {
+            if (searchEditText != null) {
+                searchEditText.clearFocus();
+            }
+            View root = getView();
+            if (root != null) {
+                InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(root.getWindowToken(), 0);
+            }
+        } catch (Exception ignored) {}
+        if (searchContainer != null) searchContainer.setTranslationY(0f);
     }
 
     private BroadcastReceiver appInstallReceiver = new BroadcastReceiver() {
