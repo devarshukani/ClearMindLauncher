@@ -21,18 +21,23 @@ import android.os.Looper;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsAnimationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.provider.CalendarContract;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -81,6 +86,7 @@ public class AppDrawerFragment extends Fragment{
     private RecyclerView recyclerView;
     private EditText searchEditText;
     private ImageButton btnSettings;
+    private View searchContainer; // added field
 
     List<PausedApps> pausedAppsList;
     RoomDB database;
@@ -145,22 +151,19 @@ public class AppDrawerFragment extends Fragment{
         searchEditText = view.findViewById(R.id.ETHomeSearchField);
         btnSettings = view.findViewById(R.id.btnSettings);
         alphabetScrollBar = view.findViewById(R.id.alphabetScrollBar);
-        alphabetTouchArea = view.findViewById(R.id.alphabetTouchArea); // Initialize the touch area
-        alphabetOverlay1 = view.findViewById(R.id.alphabetOverlay1); // Initialize first overlay
-        alphabetOverlay2 = view.findViewById(R.id.alphabetOverlay2); // Initialize second overlay
+        alphabetTouchArea = view.findViewById(R.id.alphabetTouchArea);
+        alphabetOverlay1 = view.findViewById(R.id.alphabetOverlay1);
+        alphabetOverlay2 = view.findViewById(R.id.alphabetOverlay2);
         selectedLetterIndicator = view.findViewById(R.id.selectedLetterIndicator);
+        searchContainer = view.findViewById(R.id.searchContainer);
 
         loadApps();
         setupRecyclerView(view);
         setupSearchBar();
         setupAlphabetScrollBar();
+        setupImePinnedSearch(view);
 
-        //         Request focus and show the keyboard for the search bar
-//        searchEditText.requestFocus();
-//        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-//        imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT);
-
-        // Add haptic feedback to search bar when focused
+        // Keep only haptic feedback on focus; do not modify insets here
         searchEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -560,18 +563,31 @@ public class AppDrawerFragment extends Fragment{
             }
         });
 
-        // Handle focus changes to move search bar above keyboard
-        searchEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        // IME action: handle when user presses the keyboard search action
+        searchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    animHelper.animateButtonClickWithHaptics(searchEditText);
-                    // Adjust layout when keyboard appears
-                    adjustLayoutForKeyboard(true);
-                } else {
-                    // Reset layout when keyboard disappears
-                    adjustLayoutForKeyboard(false);
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                        (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
+                    String text = v.getText() != null ? v.getText().toString().trim() : "";
+                    if (TextUtils.isEmpty(text)) return true;
+
+                    // If ChatGPT URL pasted, try to open in app else web
+                    if (isChatGptUrl(text)) {
+                        String q = extractQueryFromChatGptUrl(text);
+                        if (TextUtils.isEmpty(q)) {
+                            openChatGptUrl(text);
+                        } else {
+                            openChatGptQuery(q);
+                        }
+                    } else {
+                        // Otherwise default to Google search in browser
+                        openGoogleSearch(text);
+                    }
+                    // consume
+                    return true;
                 }
+                return false;
             }
         });
     }
@@ -605,42 +621,6 @@ public class AppDrawerFragment extends Fragment{
         }
     }
 
-    private void adjustLayoutForKeyboard(boolean keyboardVisible) {
-        View rootView = getView();
-        if (rootView == null) return;
-
-        if (keyboardVisible) {
-            // Move search bar and content up when keyboard is visible
-            rootView.post(() -> {
-                // Apply bottom padding to push content above keyboard
-                ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
-                    androidx.core.graphics.Insets imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime());
-                    androidx.core.graphics.Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-
-                    // Apply padding for system bars and IME
-                    v.setPadding(
-                        systemBars.left,
-                        systemBars.top,
-                        systemBars.right,
-                        Math.max(imeInsets.bottom, systemBars.bottom)
-                    );
-
-                    return insets;
-                });
-            });
-        } else {
-            // Reset to normal layout when keyboard is hidden
-            ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
-                androidx.core.graphics.Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-
-                // Apply padding only for system bars
-                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-
-                return insets;
-            });
-        }
-    }
-
     private void filterApps(String searchText) {
         boolean quickSearchEnabled = (boolean) SharedPreferencesHelper.getData(getContext(), "AppDrawerQuickSearch", false);
 
@@ -663,6 +643,13 @@ public class AppDrawerFragment extends Fragment{
                 }
             }
 
+            // Normalize ChatGPT query
+            String chatGptQuery = searchText;
+            if (isChatGptUrl(searchText)) {
+                String q = extractQueryFromChatGptUrl(searchText);
+                if (!TextUtils.isEmpty(q)) chatGptQuery = q;
+            }
+
             // Add Google search option (no icon)
             SearchResultItem googleResult = new SearchResultItem(
                     searchText,
@@ -676,14 +663,19 @@ public class AppDrawerFragment extends Fragment{
 
             // Add ChatGPT search option (no icon)
             SearchResultItem chatgptResult = new SearchResultItem(
-                    searchText,
+                    chatGptQuery,
                 "com.openai.chatgpt",
                 null, // No icon for ChatGPT
                 SearchResultItem.SearchType.CHATGPT,
-                searchText,
+                chatGptQuery,
                 false // Don't show icon
             );
-            searchResults.add(chatgptResult);
+            // Prefer ChatGPT on top if user pasted full ChatGPT URL
+            if (isChatGptUrl(searchText)) {
+                searchResults.add(0, chatgptResult);
+            } else {
+                searchResults.add(chatgptResult);
+            }
 
             // Use QuickSearchAdapter for Quick Search results
             QuickSearchAdapter adapter = new QuickSearchAdapter(searchResults, pausedAppsList);
@@ -1272,40 +1264,81 @@ public class AppDrawerFragment extends Fragment{
 
             case GOOGLE:
                 // Open Google search with the query
-                try {
-                    String googleSearchUrl = "https://www.google.com/search?q=" + Uri.encode(searchResult.query);
-                    Intent googleIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(googleSearchUrl));
-
-                    // Clear search and launch Google
-                    InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    inputMethodManager.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
-                    searchEditText.clearFocus();
-                    searchEditText.setText("");
-                    startActivity(googleIntent);
-                } catch (Exception e) {
-                    showToastWithCooldown("Unable to open Google search");
-                }
+                openGoogleSearch(searchResult.query);
                 break;
 
             case CHATGPT:
                 // Try to open ChatGPT app or web version with search query
-                try {
-
-                        // Fallback to ChatGPT web version with query parameter
-                        String chatgptUrl = "https://chat.openai.com/?q=" + Uri.encode(searchResult.query);
-                        Intent webIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(chatgptUrl));
-
-                        // Clear search and launch ChatGPT web
-                        InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
-                        searchEditText.clearFocus();
-                        searchEditText.setText("");
-                        startActivity(webIntent);
-                } catch (Exception e) {
-                    showToastWithCooldown("Unable to open ChatGPT");
+                if (isLikelyUrl(searchResult.query) && isChatGptUrl(searchResult.query)) {
+                    openChatGptUrl(searchResult.query);
+                } else {
+                    openChatGptQuery(searchResult.query);
                 }
                 break;
         }
+    }
+
+    private void openGoogleSearch(String query) {
+        try {
+            String googleSearchUrl = "https://www.google.com/search?q=" + Uri.encode(query);
+            Intent googleIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(googleSearchUrl));
+
+            // Clear search and launch Google
+            InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
+            searchEditText.clearFocus();
+            searchEditText.setText("");
+            startActivity(googleIntent);
+        } catch (Exception e) {
+            showToastWithCooldown("Unable to open Google search");
+        }
+    }
+
+    private boolean isLikelyUrl(String text) {
+        return text != null && (text.startsWith("http://") || text.startsWith("https://"));
+    }
+
+    private boolean isChatGptUrl(String text) {
+        if (TextUtils.isEmpty(text)) return false;
+        String lower = text.toLowerCase(Locale.US);
+        return lower.startsWith("https://chat.openai.com/") || lower.startsWith("http://chat.openai.com/");
+    }
+
+    private String extractQueryFromChatGptUrl(String url) {
+        try {
+            Uri uri = Uri.parse(url);
+            String q = uri.getQueryParameter("q");
+            if (!TextUtils.isEmpty(q)) return q;
+        } catch (Exception ignored) {}
+        return "";
+    }
+
+    private void openChatGptUrl(String url) {
+        try {
+            // Prefer opening in ChatGPT app if installed (deep link handler)
+            Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            appIntent.setPackage("com.openai.chatgpt");
+            startActivity(appIntent);
+        } catch (Exception e) {
+            // Fallback to any browser
+            try {
+                Intent webIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity(webIntent);
+            } catch (Exception ex) {
+                showToastWithCooldown("Unable to open ChatGPT");
+            }
+        } finally {
+            // Clear search
+            InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
+            searchEditText.clearFocus();
+            searchEditText.setText("");
+        }
+    }
+
+    private void openChatGptQuery(String query) {
+        String chatgptUrl = "https://chat.openai.com/?q=" + Uri.encode(query);
+        openChatGptUrl(chatgptUrl);
     }
 
 
@@ -1570,5 +1603,51 @@ public class AppDrawerFragment extends Fragment{
         public CharSequence name;
         public Drawable icon;
         boolean showIcon;
+    }
+
+    private void setupImePinnedSearch(View root) {
+        if (searchContainer == null || recyclerView == null) return; // fixed null-check
+
+        // Ensure list content isn't hidden behind the search bar
+        searchContainer.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom,
+                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                int padBottom = v.getHeight();
+                if (recyclerView.getPaddingBottom() != padBottom) {
+                    recyclerView.setPadding(
+                        recyclerView.getPaddingLeft(),
+                        recyclerView.getPaddingTop(),
+                        recyclerView.getPaddingRight(),
+                        padBottom
+                    );
+                }
+            }
+        });
+
+        // Apply translation so the search bar stays right above the IME
+        ViewCompat.setOnApplyWindowInsetsListener(root, (v, insets) -> {
+            Insets ime = insets.getInsets(WindowInsetsCompat.Type.ime());
+            Insets sys = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            boolean imeVisible = insets.isVisible(WindowInsetsCompat.Type.ime());
+            int overlap = Math.max(0, ime.bottom - sys.bottom);
+            searchContainer.setTranslationY(imeVisible ? -overlap : 0f);
+            return insets;
+        });
+
+        // Animate during keyboard transitions for a smoother feel
+        ViewCompat.setWindowInsetsAnimationCallback(root, new WindowInsetsAnimationCompat.Callback(
+                WindowInsetsAnimationCompat.Callback.DISPATCH_MODE_CONTINUE_ON_SUBTREE) {
+            @NonNull
+            @Override
+            public WindowInsetsCompat onProgress(@NonNull WindowInsetsCompat insets,
+                                                 @NonNull List<WindowInsetsAnimationCompat> runningAnimations) {
+                Insets ime = insets.getInsets(WindowInsetsCompat.Type.ime());
+                Insets sys = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+                int overlap = Math.max(0, ime.bottom - sys.bottom);
+                searchContainer.setTranslationY(-overlap);
+                return insets;
+            }
+        });
     }
 }

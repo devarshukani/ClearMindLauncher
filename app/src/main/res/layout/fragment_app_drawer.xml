@@ -449,9 +449,12 @@
 
     <!-- Search bar container - positioned at bottom to move above keyboard -->
     <LinearLayout
+        android:id="@+id/searchContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@color/PrimaryBackgroundColor"
+        android:elevation="8dp">
 
         <EditText
             android:id="@+id/ETHomeSearchField"
