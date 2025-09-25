@@ -22,6 +22,7 @@ import android.os.Looper;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
+import androidx.core.text.TextUtilsCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsAnimationCompat;
@@ -87,6 +88,7 @@ public class AppDrawerFragment extends Fragment{
     private EditText searchEditText;
     private ImageButton btnSettings;
     private View searchContainer; // added field
+    private Drawable clearIcon; // clear (X) icon shown when search has text
 
     List<PausedApps> pausedAppsList;
     RoomDB database;
@@ -149,6 +151,43 @@ public class AppDrawerFragment extends Fragment{
         animHelper = new AnimateLinearLayoutButton(); // Initialize haptics helper
 
         searchEditText = view.findViewById(R.id.ETHomeSearchField);
+        // Prepare clear icon drawable
+        try {
+            clearIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_clear);
+        } catch (Exception ignored) { clearIcon = null; }
+        // Ensure the correct initial icon state
+        updateClearIconVisibility();
+
+        // Handle tapping the clear icon
+        searchEditText.setOnTouchListener((v, event) -> {
+            if (clearIcon == null) return false;
+            if (searchEditText.getText() == null || searchEditText.getText().length() == 0) return false;
+            if (event.getAction() != MotionEvent.ACTION_UP) return false;
+
+            final boolean isRtl = TextUtilsCompat.getLayoutDirectionFromLocale(Locale.getDefault()) == ViewCompat.LAYOUT_DIRECTION_RTL;
+            Drawable[] drawables = searchEditText.getCompoundDrawablesRelative();
+            Drawable end = drawables[2];
+            if (end == null) return false;
+
+            int iconWidth = end.getBounds().width();
+            if (iconWidth == 0) iconWidth = end.getIntrinsicWidth();
+            int touchX = (int) event.getX();
+            if (!isRtl) {
+                int startX = searchEditText.getWidth() - searchEditText.getPaddingRight() - iconWidth;
+                if (touchX >= startX) {
+                    clearSearchTextAndReset();
+                    return true;
+                }
+            } else {
+                int endX = searchEditText.getPaddingLeft() + iconWidth;
+                if (touchX <= endX) {
+                    clearSearchTextAndReset();
+                    return true;
+                }
+            }
+            return false;
+        });
+
         btnSettings = view.findViewById(R.id.btnSettings);
         alphabetScrollBar = view.findViewById(R.id.alphabetScrollBar);
         alphabetTouchArea = view.findViewById(R.id.alphabetTouchArea);
@@ -187,6 +226,31 @@ public class AppDrawerFragment extends Fragment{
         return view;
     }
 
+    private void clearSearchTextAndReset() {
+        try { animHelper.animateButtonClickWithHaptics(searchEditText); } catch (Exception ignored) {}
+        searchEditText.setText("");
+        searchEditText.clearFocus();
+        // Hide keyboard
+        try {
+            InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
+        } catch (Exception ignored) {}
+        // Reset search bar position to bottom
+        if (searchContainer != null) searchContainer.setTranslationY(0f);
+        updateClearIconVisibility();
+    }
+
+    private void updateClearIconVisibility() {
+        if (searchEditText == null) return;
+        CharSequence text = searchEditText.getText();
+        boolean hasText = text != null && text.length() > 0;
+        Drawable[] current = searchEditText.getCompoundDrawablesRelative();
+        Drawable start = current[0];
+        Drawable top = current[1];
+        Drawable bottom = current[3];
+        Drawable end = hasText ? clearIcon : null;
+        searchEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(start, top, end, bottom);
+    }
 
     @Override
     public void onResume() {
@@ -248,6 +312,8 @@ public class AppDrawerFragment extends Fragment{
                 }
             });
         }
+        // Keep clear icon state in sync after returning
+        updateClearIconVisibility();
     }
 
     @Override
@@ -588,6 +654,8 @@ public class AppDrawerFragment extends Fragment{
 
                 // Hide/show A-Z scrollbar based on search text
                 toggleAlphabetScrollBar(s.toString().trim().isEmpty());
+                // Toggle clear icon
+                updateClearIconVisibility();
             }
 
             @Override
@@ -1320,6 +1388,10 @@ public class AppDrawerFragment extends Fragment{
             inputMethodManager.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
             searchEditText.clearFocus();
             searchEditText.setText("");
+            // Ensure search bar returns to bottom position
+            if (searchContainer != null) searchContainer.setTranslationY(0f);
+            updateClearIconVisibility();
+
             startActivity(googleIntent);
         } catch (Exception e) {
             showToastWithCooldown("Unable to open Google search");
@@ -1360,11 +1432,13 @@ public class AppDrawerFragment extends Fragment{
                 showToastWithCooldown("Unable to open ChatGPT");
             }
         } finally {
-            // Clear search
+            // Clear search and reset bar position
             InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
             searchEditText.clearFocus();
             searchEditText.setText("");
+            if (searchContainer != null) searchContainer.setTranslationY(0f);
+            updateClearIconVisibility();
         }
     }
 
